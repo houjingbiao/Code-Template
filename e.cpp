@@ -6,7 +6,7 @@ int main() {
 	while(1) {
 		putchar(digits[1] + '0');
 		digits[1] = 0; carry = 0;
-		for(i = 999; i > 1; i--){
+		for(i = 999; i > 1; i--){//里面应该用到了一些计数方法的
 			d = digits[i]*10+carry;
 			digits[i] = d%i;
 			carry = d/i;
