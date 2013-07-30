@@ -1,3 +1,5 @@
+
+
 #define nMax 100
 float getWater(float C, float L, int n)//C: capacity of each cup, L: the amount of water, n: the index of the cup whose water we want
 {
