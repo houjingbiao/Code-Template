@@ -222,61 +222,49 @@ int main(){
 
 //1076 排序 
 #include <stdio.h>
-void heapAdjust(int arr[], int n, int i){
-	int left = 2*i+1;
-	int right = 2*i+2;
-	if(left < n){
-		if(right < n){
-			if(arr[left] > arr[right]){
-				if(arr[i] < arr[left]){
-					int tmp = arr[i];
-					arr[i] = arr[left];
-					arr[left] = tmp;
-					heapAdjust(arr, n, left);
-				}
-			}
-			else{
-				if(arr[i] < arr[right]){
-					int tmp = arr[i];
-					arr[i] = arr[right];
-					arr[right] = tmp;
-					heapAdjust(arr, n, right);
-				}
-			}
-		}
+typedef int ElemType;//hjb: the order
+void AdjustDown(ElemType A[], int k, int len){
+	A[0] = A[k];
+	for(int i = 2*k; i <= len; i *= 2){
+		if(i < len && A[i] < A[i+1])
+			i++;
+		if(A[0] > A[i]) break;
 		else{
-			if(arr[i] < arr[left]){
-				int tmp = arr[i];
-				arr[i] = arr[left];
-				arr[left] = tmp;
-			}
+			A[k] = A[i];
+			k = i;
 		}
 	}
+	A[k] = A[0];
 }
+
+void BuildMaxHeap(ElemType A[], int len){
+	for(int i = len/2; i > 0; i--)
+		AdjustDown(A, i, len);
+}
+
+void HeapSort(ElemType A[], int len){
+	BuildMaxHeap(A, len);
+	for(int i = len; i > 1; i--){
+		A[0] = A[i];
+		A[i] = A[1];
+		A[1] = A[0];
+		AdjustDown(A, 1, i-1);//hjb: i - 1
+	}
+}
+
 int main(){
 	int n;
 	scanf("%d", &n);
-	int* arr = new int[n];
-	int i = 0;
-	while(i <n && scanf("%d", (arr+i))) i++;
-	
-	for(i = n/2-1; i >= 0; i--)
-		heapAdjust(arr, n, i);
-	
-	int curr_n = n;
-	while(curr_n > 3){
-		int tmp = arr[curr_n - 1];
-		arr[curr_n - 1] = arr[0];
-		arr[0] = tmp;
-		curr_n--;
-		for(i = curr_n/2-1; i >= 0; i--)
-			heapAdjust(arr, curr_n, 0);
+	int *arr = new int[n+1];
+	for(int i = 1; i <= n; i++){
+		scanf("%d", arr+i);
 	}
-	i = 0;
-	while(i < n) printf("%d", arr[i++]);
+	HeapSort(arr, n);
+	int i = 1;
+	while(i <= n) printf("%d ", arr[i++]);
+	delete[] arr;
 	return 0;
 }
-
 
 
 //1075 明明的随机数 
