@@ -10,12 +10,15 @@ int main(){
 	for(int i = 0; i < N; i++)
 		sum += A[i];
 	int avg = sum/N;
+	sum = 0;
 	int move = 0;
 	for(int i = 0; i < N; i++){
-		move += 
+		sum += A[i];
+		if(sum != avg*(i+1))
+			move++;
 	}
-	
-	
+	printf("%d", move);
+	return 0;
 }
 
 
