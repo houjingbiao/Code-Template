@@ -1,3 +1,139 @@
+
+
+//删数问题，给定一个高精度的正整数N（不超过240位），去掉任意S个数字之后剩下的数字按照原左右次序组成一个新的正整数。编程对给定的N和S，寻找一种方案使得剩下的数字组成的新数最小
+#include <stdio.h>
+int main(){
+	
+}
+
+//POJ 3040: Allowance
+#include <stdio.h>
+#include <algorithm>
+typedef struct denomation{
+	int val;
+	int count;
+}coin;
+bool compare(coin c1, coin c2){
+	return c1.val < c2.val;
+}
+int main(){
+	int N, C;
+	scanf("%d %d", &N, &C);
+	coin* coins = new coin[N];
+	int sum = 0;
+	for(int i = 0; i < N; i++){
+		scanf("%d %d", &coins[i].val, &coins[i].count);
+		sum += coins[i].val*coins[i].count;
+	}
+	sort(coins, coins+N, compare);
+	int count = 1;
+	sum = sum < 1000000? sum:1000000;
+	for(int i = sum; i >= C; i++){
+		
+	}
+	if(coins[i] == 1)
+	
+	return 0;
+}
+
+
+//POJ 1017: Packets
+//a more readable version
+#include <stdio.h>
+#include <string.h>
+int main(){
+	//freopen("out.txt", "w", stdout);
+	int remain[7];
+	int p[7];
+	memset(p, 0, 7*sizeof(int));
+	//freopen("in.txt", "r", stdin);
+	while(scanf("%d %d %d %d %d %d", &p[1], &p[2], &p[3], &p[4], &p[5], &p[6])
+		&& (p[6] || p[1] || p[2] || p[3] || p[4] || p[5])){
+		memset(remain, 0, 7*sizeof(int));
+		int ans = p[6]; //6*6
+		
+		ans += p[5]; //5*5
+		remain[1] = 11*p[5];
+		
+		ans += p[4]; //4*4
+		remain[2] = 5*p[4];
+		
+		ans += (p[3]+3)/4; //3*3
+		int rem = p[3]%4;
+		if(rem == 1){
+			remain[2] += 5;
+			remain[1] += 7;
+		}
+		else if(rem == 2){
+			remain[2] += 3;
+			remain[1] += 6;
+		}
+		else if(rem == 3){
+			remain[2] += 1;
+			remain[1] += 5;
+		}
+		
+		if(p[2] < remain[2]){//hjb: missing parenthesis
+			remain[1] += (remain[2] - p[2])*4;
+		}
+		else{
+			ans += (p[2] - remain[2] + 8)/9;
+			int rem2 = (p[2] - remain[2])%9;
+			if(rem2 != 0)
+				remain[1] += (9 - rem2)*4;
+		}
+		ans += p[1]-remain[1]>0 ? (p[1]-remain[1]+35)/36:0; //1*1
+		printf("%d\n", ans);
+	}
+	return 0;
+}
+
+//my version
+#include <stdio.h>
+#include <string.h>
+int main(){
+	int p[7];
+	memset(p, 0, 7*sizeof(int));
+	//freopen("in.txt", "r", stdin);
+	while(scanf("%d %d %d %d %d %d", &p[1], &p[2], &p[3], &p[4], &p[5], &p[6])
+		&& (p[6] || p[1] || p[2] || p[3] || p[4] || p[5])){
+		int ans = p[6]; //6*6
+		
+		ans += p[5]; //5*5
+		p[1] = (p[1] > 11*p[5]) ? p[1] - 11*p[5] : 0;
+		
+		ans += p[4]; //4*4
+		int b2 = p[2];
+		p[2] = (p[2] > 5*p[4]) ? p[2] - 5*p[4] : 0;
+		if(p[2] == 0){
+			int remain = 20*p[4] - b2*4;
+			p[1] = p[1] - remain > 0 ? p[1] - remain : 0;
+		}
+		
+		ans += (p[3]+3)/4; //3*3
+		int rem = p[3]%4;
+		if(rem != 0){
+			rem = 4 - rem;
+		}
+		b2 = p[2];
+		p[2] = p[2] > (rem*3+rem-1)/2? p[2] - (rem*3+rem-1)/2:0;
+		int b1 = rem*9 - (b2 - p[2])*4;
+		p[1] = p[1] > b1 ? p[1] - b1 : 0;
+		
+		ans += (p[2]+8)/9; //2*2
+		int rem2 = p[2]%9;
+		if(rem2 != 0){
+			rem2 = (9 - rem2)*4;
+			p[1] = rem2 > p[1]? 0 : p[1] - rem2;
+		}		
+		
+		ans += (p[1]+35)/36; //1*1
+		printf("%d\n", ans);
+	}
+	return 0;
+}
+
+//POJ 2393: Yogurt factory
 #include <stdio.h>
 #include <vector>
 #include <utility>
