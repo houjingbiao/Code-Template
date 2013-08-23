@@ -39,3 +39,6 @@ D：4 1 2 3 4 1....
 
 ## 4. poj 3040： Stripies ##
 地址：[http://poj.org/problem?id=1862](http://poj.org/problem?id=1862)
+
+## 5. Protecting the Flower ##
+地址：[http://poj.org/problem?id=3262](http://poj.org/problem?id=3262)

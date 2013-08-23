@@ -1,4 +1,21 @@
-
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	return 0;
+}
 
 //删数问题，给定一个高精度的正整数N（不超过240位），去掉任意S个数字之后剩下的数字按照原左右次序组成一个新的正整数。编程对给定的N和S，寻找一种方案使得剩下的数字组成的新数最小
 #include <stdio.h>
@@ -33,6 +50,62 @@ int main(){
 	}
 	if(coins[i] == 1)
 	
+	return 0;
+}
+
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	return 0;
+}
+
+
+//POJ 1862: Stripies
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int N;
+	scanf("%d", &N);
+	vector<double> vec;
+	for(int i = 0; i < N; i++){
+		int strip;
+		scanf("%d", &strip);
+		vec.push_back((double)strip);
+	}
+	sort(vec.begin(), vec.end());
+	while(vec.size()>1){
+		double newstrip = 2*sqrt(vec[vec.size()-2]*vec[vec.size()-1]);
+		vec.erase(vec.begin()+vec.size()-1);
+		vec.erase(vec.begin()+vec.size()-1);
+		vec.push_back(newstrip);
+	}
+	printf("%.3lf", vec[0]);//hjb: format for the preciseness
 	return 0;
 }
 
