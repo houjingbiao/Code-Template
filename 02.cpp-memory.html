@@ -1,0 +1,791 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>02.cpp-memory</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: 29d1c5bc36da364ad5aa86946d420b7bbc54a253 */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Item 3. Prefer new and delete to malloc and free</h2>
+<p>string <em>stringarray1 = static_cast&lt;string</em>&gt;(malloc(10*sizeof(string)));//allocate enough memory for 10 string objects, but none of them is constructed. What is worse is that we have no way to initialize these ten objects.
+string *stringarray2 = new string[10];//10 constructed string objects are allocated.</p>
+<p>delete stringarray1; // no destructor has been called and the memory alloceted in the object will be lost.
+delete[] stringarray2; //</p>
+<p>//Mixing new and delete with malloc and free is usually a bad idea.</p>
+<p>char * strdup(const char* ps);//return copy of what ps points to</p>
+<p>// new and delete inside and outside of clesses give rise to all kinds of opportunities to make mistake</p>
+<h2>// Item 5. Use the same form in corresponding uses of new and delete</h2>
+<p>string *stringarray = new string[100];
+delete[] stringarray;
+string *stringarray2 = new string;
+delete stringarray2;</p>
+<p>typedef string AddressLines[4];// a person's address has four lines, each of which is a string.
+string *pal = new AddressLines;// retrns a &quot;string *&quot;, just like &quot;new string[4]&quot; would
+delete[] pal;
+// to avoid such confusion, you're probably best off abstaining from typedefs for array types. A good solution is that replacing something like AddressLines with a vector of strings;</p>
+<h2>// Item 6. Use delete on pointer members in destructors</h2>
+<p>// for the pointer member defined in the class, we are required to do each of these three things:
+// 1. Initializion of the pointer in each of the constructors, if no memory is to be allocated to the pointer in a particular constructor, the pointer should be initialized to 0
+// 2. Deletion of the existing memory and assignment of new memory in the assignment operator
+// 3. Deletion of the pointer in the destructor.</p>
+<p>// an alternative solution to this case is that using smart pointer.</p>
+<h2>// Item 7. Be prepared for out-of-memory conditions</h2>
+<p>// Defining a Macro for new in this way, like</p>
+<h1>define NEW(PTR, TYPE) \</h1>
+<p>try { (PTR) = new TYPE;} \
+catch (std::bad_alloc&amp;) {assert(0);}
+// the assert is a macro, which suffers from the common errors of using assert to test condition that might occur in production code.</p>
+<p>// three basic ways to use the new operator:
+new T;
+new T(constructor arguments);
+new T[size];
+// program can define his own version of &quot;new&quot;</p>
+<p>typedef void(*new<em>handler)(); // define a function pointer
+new</em>handler set_new<em>handler(new</em>handler p) throw();</p>
+<p>// the way to use set<em>new</em>handler</p>
+<pre>
+void noMoreMemory(){
+	cerr << "Unable to satisfy request for memory";
+	abort();
+}
+int main(){
+	set_new_handler(nonMoreMeory);
+	int *pBigDataArray = new int[100000000];
+}
+</pre>
+<p>// when operator new can cannot satisfy a request for memeory, it calls the new_handler function not once, but repeatedly until it can find enough memory. There are several method to solve or avoid this bad situation.</p>
+<p>/*
+1. Make more memory available. This may allow operator new's next attempt to allocate the memory to succeed. One way to implement this strategy is to allocate a large block of memory at program start-up, the release it the first time the new<em>handler is invoked. Such a release is often accompanied by some kind of warning to the user that memeory is low and that future requests may fail unless more memory is somehow make available.
+2. Install a different new-handler. If the current new-handler can't make any more memor available, perhaps it knows of a different new-handler that is more resourceful. If so, the current new-hanlder can in stall the other new-handler in its place(by calling set</em>new<em>handler). The next time operator new calls the new-handler functoin, it will get the one most recently installed. (A variation on this theme is for new-handler to modify its own behavior, so the next time it's invoked, it does some thing different. One way to achieve this is to have the new-handler modify static or global data that affects the new-handler's behavior).
+3. Deinstall the new-handler, i.e., pass the null pointer to set<em>new</em>handler. With no new</em>handler installed, operator new will throw an exception of type std::bad<em>alloc when its attempt to allocate memory is unsuccessful.
+4. Throw an exception of type std::bad</em>alloc or some type derived from std::bad<em>alloc. Such exceptions wil not be caught by operator new, so they will propagate to the site originating the request for memory.(Throwing an exception of a different type will violate operator new's exception specification. The default action when that happens is to call abort, so if your new-handler is going to throw an exception, you definitely want to make sure it's from the std::bad</em>alloc hierarchy.)
+5. Not Return, typically by calling abort or exit, both of which are found in standard C library and thus in the standard C++ library.
+*/</p>
+<pre>
+//class specific new-handlers
+class X{
+public:
+	static new_handler set_new_handler(new_handler p){
+		new_handler oldHandler = currentHandler;
+		currentHandler = p;
+		return oldHandler;
+	};
+	static void * operator new(size_t size);
+private: 
+	static new_handler currentHandler;
+}
+</pre>
+<p>//Static class members must be defined out side the class definition</p>
+<pre>
+new_handler X::currentHandler;// sets currentHandler to 0 (i.e., null) by default
+void * X::operator new(size_t size){
+	new_handler globalHandler = std::set_new_handler(currentHandler);
+	void *memory;
+	try{
+		memory = ::operator new(size);
+	}
+	catch (std::bad_alloc&){
+		std::set_new_handler(globalHandler);
+		throw;//propagte exception
+	}
+	std::set_new_handler(globalHandler);
+	return memeory;
+}
+
+
+//Clients of class X use its new-handling capacities like this:
+void noMoreMemory();
+X::set_new_handler(noMoreMemory);
+X *px1 = new X;
+string *ps = new string;
+X::set_new_handler(0);
+X *px2 = new X;
+
+template<class T>
+class NewHandlerSupport{
+public:
+	static new_handler set_new_handler(new_handler p);
+	static void * operator new(size_t size);
+private:
+	static new_handler currentHandler;
+}
+
+template<class T>
+new_handler NewHandlerSupport<T>::set_new_handler(new_handler p){
+	new_handler oldHandler = currentHandler;
+	currentHandler = p;
+	return oldHandler;
+}
+
+template<class T>
+new_handler void * new(size_t size){
+	new_handler globalHandler = std::set_new_handler(currentHandler);
+	void *memory;
+	try{
+		memory = ::operator new(size);
+	}
+	catch (std::bad_alloc){
+		std::set_new_handler(globalHandler);
+		throw;
+	}
+	std::set_new_handler(globalHandler);
+	return memory;
+}
+template<T> new_handler NewHandlerSupport<X>::currentHandler;
+
+class X: public NewHandlerSupport<X>{
+}
+
+// normal new and nonthrow new
+new (nothrow) BaseClass;
+</pre>
+<h2>// Item 8: Adhere to convetion when writing operator new and operator delete</h2>
+<pre>
+void * operator new(size_t size){
+	if(size == 0){
+		size = 1;
+	}
+	while(1){
+		//attempt to allocate size bytes;
+		if(the allocation was successful)
+			return (a pointer to the memory);
+		
+		// allocation is unsuccessful; find out what the current error-handling function is (see Item7)
+		new_handler globalHandler = set_new_handler(0);
+		set_new_handler(globalHandler);
+		
+		if(globalHandler) (*globalHandler)();
+		else throw std::bad_alloc();
+	}
+}
+
+
+// class-specific operator new in the base class will be inherited by its derived class
+void * Base::operator new(size_t size){
+	if(size != sizeof(Base)){
+		return ::operator new(size);
+	}
+}
+
+// non-member operator
+void delete(void * rawMemoryS){
+	if(rawMemory == 0) return;
+	//deallocate the memory pointed to by rawMemory
+	
+	return;
+}
+
+
+class Base{
+public:
+	static void *operator new(size_t size);
+	static void operator delete(void* rawMemorys, size_t size);
+}
+
+void Base::operator delete(void *rawMemory, size_t size){
+	if(rawMemory == 0) return;
+	
+	if(size != sizeof(Base)){
+		::operator delete(rawMemory);
+		return;
+	}
+	
+	//deallocate the memory pointed to by rawMemory
+	
+	return;
+}
+</pre>
+<p>// The conventions, then, for operator new and delete(and their array counterparts) are not particularly onerous, but it is important that you obey them. If your allocation routines support new handlers functions and correctly deal with zero-sized requests, you're all but finished, and if your deallocation routines cope with null pointers, there's little more than to do. Add support for inheritance in member versions of the functions, and presto!? you're done.</p>
+<h2>// Item 9. Avoid hiding the &quot;normal&quot; form of new</h2>
+<pre>
+//one solution to write a class-specific operator new that support the "normal" invocation form.
+class X{
+public:
+	void f();
+	static void* operator new(size_t size, new_handler p); 
+	static void* operator new(size_t size){
+		return ::operator new(size);
+	}
+};
+X *px1 = new (specialErrorHandler) X;
+X *px2 = new X;
+
+//an alternative way to provide a default parameter value for each additional parameter you add to operator new
+class X{
+public:
+	void f();
+	static void* operator new(size_t size, new_handler p = 0); 
+	static void* operator new(size_t size){
+		return ::operator new(size);
+	}
+};
+X *px1 = new (specialErrorHandler) X;
+X *px2 = new X;
+
+//Item 10. Write operator delete if you write operator new
+class Airplane{
+public: 
+	static void* operator new(size_t size);
+	static void operator delete(void *deadObject, size_t size);
+private:
+	union{
+		AirplaneRep *p;
+		Airplane *next;
+	}
+	static const int BLOCK_SIZE;
+	static Airplane *headOfFreeList;
+};
+
+void *Airplane::operator new(size_t size){
+	if(size != sizeof(Airplane))
+		return ::operator new(size);
+		
+	Airplane *p = headOfFreeList;
+	if(p)
+		headOfFreeList = p->next;
+	else{
+		Airplane *newBlock = static_cast<Airplane*>(::operator new(BLOCK_SIZE*sizeof(Airplane)));
+		for(int i = 0; i < BLOCK_SIZE-1; i++)
+			newBlock[i].next = &newBlock[i+1];
+		newBlock[BLOCK_SIZE-1].next = 0;
+		p = newBlock;
+		headOfFreeList = &newBlock[1];
+	}
+	return p;
+};
+
+void Airplane::operator delete(void *deadObject, size_t size){
+	if(deadObject == 0) return;
+	if(size != sizeof(Airplane)){
+		::operator delete(deadObject);
+		return;
+	}
+	Airplane *carcass = static_cast<Airplane*>(deadOjbect);
+	carcass->next = headOfFreeList;
+	headOfFreeList = carcass;
+};
+
+Airplane *Airplane::headOfFreeList;
+const int Airplane::BLOCK_SIZE = 512;
+
+class Pool{
+public:
+	Pool(size_t n);
+	void *alloc(size_t n);
+	void free(void* p, size_t n);
+	~Pool();
+private:
+	static Airplane* headOfTotalList;
+	static Airplane* headOfFreeList;
+	static const void* SIZE;
+	size_t block_size;
+};
+
+Pool::Pool(size_t n){
+	if(headOfTotalList != 0)
+		return;
+	block_size = n;
+	void *memBlock
+	headOfTotalList = ::operator new(block_size*SIZE);
+	
+}
+
+Pool::~Pool(){
+	::operator delete(headOfTotalList);
+	headOfTotalList = 0;
+}
+
+void *Pool::alloc(size_t n){
+	if(headOfFreeList == NULL){
+		void* p = ::operator new(n);
+		p->next = headOfFreeList;
+	}
+}
+
+void Pool::free(void *p, size_t n){
+	if(p == NULL) return;
+	memBlock *carcass = static_cast<memBlock*>(p);
+	carcass->next = headOfFreeList;
+};
+
+Airplane * Pool::headOfFreeList;
+Airplane * Pool::headOfTotalList;
+const int Pool::SIZE = 512;
+
+class Airplane{
+public:
+	static void* operator new(size_t size);
+	static void operator delete(Airplane* p, size_t size);
+private:
+	AirplaneRep * rep;
+	static Pool memPool;
+};
+inline void* Airplane::operator new(size_t size){
+	return memPool.alloc(size);
+};
+inline void Airplane::operator delete(Airplane *p, size_t size){
+	memPool.free(p, size);
+}
+
+Pool Airplane::memPool(sizeof(Airplane));
+</pre>
+<h1>ifndef __MEMPOOL</h1>
+<h1>define __MEMPOOL</h1>
+<h1>include <iostream></h1>
+<h1>include <list></h1>
+<h1>include <string></h1>
+<h1>ifndef _DEBUG</h1>
+<h1>define _DEBUG</h1>
+<h1>endif</h1>
+<p>//#undef _DEBUG
+using namespace std;
+class airplane;</p>
+<p>class MemPool
+{
+public:;
+    explicit MemPool(int size = 4, char *name = NULL, int num = 100);  <br />
+    ~MemPool(); <br />
+    void * alloc(int n);<br />
+    void free(void *p, int n);    </p>
+<pre><code>void debugInfo(void);
+</code></pre>
+
+<p>private:;
+    string poolName;
+    int blockSize; 
+    int blockScale;<br />
+    list&lt;void *&gt;freeList;
+    list&lt;void *&gt;usedList;
+private:;
+    MemPool(MemPool &amp;a); <br />
+    MemPool &amp;operator=(const MemPool &amp;a);
+    void allocNewFreeList(int _size);
+};</p>
+<h1>endif</h1>
+<p>MemPool.cpp文件:</p>
+<h1>include &quot;MemPool.h&quot;</h1>
+<h1>include <algorithm></h1>
+<p>MemPool::MemPool(int size, char *name, int num)
+:blockSize(size), poolName(name), blockScale(num)
+{
+    #ifdef _DEBUG
+    printf(&quot;MemPool::MemPool called: blockSize: %d, blockScale: %d\n&quot;, blockSize, blockScale);
+    #endif</p>
+<pre><code>allocNewFreeList(blockSize);
+</code></pre>
+
+<p>}
+MemPool::~MemPool()
+{
+    #ifdef _DEBUG
+    printf(&quot;MemPool::~MemPool called\n&quot;);
+    #endif
+    list&lt;void *&gt;::const_iterator it = freeList.begin();</p>
+<pre><code>for (; it != freeList.end(); ++it)
+{
+    ::operator delete(*it);
+}
+freeList.clear();
+if (!usedList.empty())
+{
+
+    printf(&quot;Be careful! Some errors occures!\n&quot;);
+    for (; it != usedList.end(); ++it)
+    {
+        ::operator delete(*it);
+    } 
+    freeList.clear();
+}
+</code></pre>
+
+<p>}
+void * MemPool::alloc(int size)
+{
+    #ifdef _DEBUG
+    printf(&quot;MemPool::alloc called: size: %d\n&quot;, size);
+    #endif</p>
+<pre><code>if (size != blockSize)
+{
+    return ::operator new(size);
+}
+
+if (freeList.empty())
+{
+
+    allocNewFreeList(blockSize);
+}
+list&lt;void *&gt;::iterator it = freeList.begin();
+void *p = *it;
+freeList.pop_front();
+usedList.push_back(p);
+
+return p;
+</code></pre>
+
+<p>}
+void MemPool::free(void *deadobject, int size)
+{
+    #ifdef _DEBUG
+    printf(&quot;MemPool::free called: size: %d\n&quot;, size);
+    #endif</p>
+<pre><code>if (NULL == deadobject)
+{
+    return;         // 见条款 8
+}
+if (size != blockSize)
+{
+    ::operator delete(deadobject);      // 见条款 8
+    return;
+}
+list&lt;void *&gt;::iterator it = find(usedList.begin(), usedList.end(), deadobject);
+if (it != usedList.end())
+{
+    usedList.erase(it);
+    freeList.push_back(deadobject);
+}
+else
+{
+
+}
+</code></pre>
+
+<p>}
+void MemPool::debugInfo(void)
+{
+    cout &lt;&lt; &quot;pool name: &quot; &lt;&lt; poolName &lt;&lt; &quot;, &quot;;
+    cout &lt;&lt; &quot;block size: &quot; &lt;&lt; blockSize&lt;&lt; &quot;, &quot;;
+    cout &lt;&lt; &quot;total num: &quot; &lt;&lt; freeList.size() + usedList.size() &lt;&lt; &quot;, &quot;;
+    cout &lt;&lt; &quot;used num: &quot; &lt;&lt; usedList.size() &lt;&lt; endl;
+}
+void MemPool::allocNewFreeList(int _size)
+{
+    void *newBlock;
+    for (int i = 0; i &lt; blockScale; i++)
+    {
+        newBlock = ::operator new(<em>size);
+        freeList.push</em>back(newBlock);
+    }
+}</p>
+<p>测试文件test.cpp:</p>
+<h1>include &quot;MemPool.h&quot;</h1>
+<p>class airplane
+{
+public:;
+    // 普通airplane功能</p>
+<pre><code>airplane(){}
+virtual ~airplane(){}
+static void * operator new(size_t size);
+static void operator delete(void *p, size_t size);
+</code></pre>
+
+<p>private:
+    char *rep;                 // 指向实际描述的指针
+    string test;
+    static MemPool memMemPool;              // airplanes的内存池
+};
+inline void * airplane::operator new(size_t size)
+{
+    memMemPool.debugInfo();
+    void *tmp = memMemPool.alloc(size);
+    return  tmp;
+}
+inline void airplane::operator delete(void *p, size_t size)
+{
+    memMemPool.free(p, size);
+    memMemPool.debugInfo();
+}
+MemPool airplane::memMemPool(sizeof(airplane), &quot;airplane&quot;, 4);
+int main(void)
+{
+    #define TIMES 12
+    airplane *pAir[TIMES];
+    //printf(&quot;main: size = %d\n&quot;, sizeof(airplane));
+    for (int i = 0; i &lt; TIMES; i++)
+    {
+        //printf(&quot;times: %d    &quot;, i);
+        pAir[i] = new airplane;
+    }
+    for (i = 0; i &lt; TIMES; i++)
+    {
+        //printf(&quot;times: %d    &quot;, i);
+        delete pAir[i];
+    }
+    for (i = 0; i &lt; TIMES; i++)
+    {
+        //printf(&quot;times: %d    &quot;, i);
+        pAir[i] = new airplane;
+    }
+    for (i = 0; i &lt; TIMES; i++)
+    {
+        //printf(&quot;times: %d    &quot;, i);</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
