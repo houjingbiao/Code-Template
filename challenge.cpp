@@ -53,6 +53,9 @@ int main(){
 	return 0;
 }
 
+
+//POJ 3262: Protecting the Flowers
+//version 2:
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -67,8 +70,77 @@ int main(){
 #include <algorithm>
 #include <math.h>
 #include <string.h>
+#include <utility>
+using namespace std;
+bool compare(pair<int, int> p1, pair<int, int> p2){
+	return !(p1.second*p2.first < p2.second*p1.first);
+}
+int main(){
+	//freopen("in.txt", "r", stdin);
+	int N;
+	scanf("%d", &N);
+	vector<pair<int, int>> cows(100005, pair<int, int>(0, 0));
+	int sum = 0;
+	for(int i=0; i<N; i++){
+		scanf("%d %d", &cows[i].first, &cows[i].second);
+		//cows[i].first <<= 1;
+		sum += cows[i].second;
+	}
+	sort(cows.begin(), cows.begin()+N, compare);
+	unsigned long long ans = 0;
+	for(int i = 0; i < N; i++){
+		sum -= cows[i].second;
+		ans += sum*cows[i].first*2;
+	}
+	printf("%llu\n", ans);//hjb: the scope of the result
+	return 0;
+}
+
+//version 1
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+#include <utility>
 using namespace std;
 int main(){
+	freopen("in.txt", "r", stdin);
+	int N;
+	scanf("%d", &N);
+	vector<pair<int, int>> cows(100005, pair<int, int>(0, 0));
+	int sum = 0;
+	for(int i=0; i<N; i++){
+		scanf("%d %d", &cows[i].first, &cows[i].second);
+		cows[i].first <<= 1;
+		sum += cows[i].second;
+	}
+	int ans = 0;
+	while(N > 0){
+		int minCost = (sum - cows[0].second)*cows[0].first;
+		int minIdx = 0;
+		for(int i = 1; i < N; i++){
+			int cost = (sum - cows[i].second)*cows[i].first;
+			if(cost < minCost){
+				minCost = cost;
+				minIdx = i;
+			}
+		}
+		ans += minCost;
+		sum -= cows[minIdx].second;
+		cows.erase(cows.begin()+minIdx);
+		N--;
+	}
+	printf("%d", ans);
 	return 0;
 }
 
