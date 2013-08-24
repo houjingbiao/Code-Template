@@ -25,7 +25,20 @@ int main(){
 
 //POJ 3040: Allowance
 #include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
 #include <algorithm>
+#include <math.h>
+#include <string.h>
+#include <utility>
 typedef struct denomation{
 	int val;
 	int count;
