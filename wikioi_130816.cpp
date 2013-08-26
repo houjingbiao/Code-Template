@@ -1,21 +1,356 @@
 //3115 高精度练习之减法 
+//3116 高精度练习之加法 
+//3116 高精度练习之乘法 
 #include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+#define MAXN 505
+
+class unsignedHP;
+class HP;
+
+class unsignedHP{
+public:
+	friend ostream& operator << (ostream& cout, const unsignedHP& a);
+	unsignedHP():len(1){
+		memset(s, 0, MAXN*sizeof(int));
+	}
+	unsignedHP(const char* str):len(0){
+		if(str == NULL){
+			len = 0;
+			return;
+		}
+		memset(s, 0, MAXN*sizeof(int));
+		len = strlen(str);
+		for(int i = 0; i < len; i++){
+			s[i] = str[len - 1 - i] - '0';
+		}
+	}
+	unsignedHP(const unsignedHP& b){
+		len = b.len;
+		for(int i = 0; i < len; i++)
+			s[i] = b.s[i];
+	}
+
+	unsignedHP& operator = (const unsignedHP &b){
+		len = b.len;
+		memcpy(s, b.s, len*sizeof(int));
+		return *this;
+	}
+
+	~unsignedHP(){
+	}
+
+	bool isZero(){
+		if(len == 0 || len == 1 && s[0] == 0)
+			return true;
+		return false;
+	}
+
+	bool operator <= (const unsignedHP &b){
+		if(len == b.len){
+			int i = len - 1;
+			while(i >= 0 && s[i] == b.s[i]){
+				i--;
+			}
+			if(i < 0) return true;
+			else return s[i] <= b.s[i];
+		}
+		return len < b.len;
+	}
+
+	bool operator > (const unsignedHP &b){
+		return !(*this <= b);
+	}
+	unsignedHP operator +(const unsignedHP &b){
+		int i = 0; 
+		int jie = 0;
+		unsignedHP ret;
+		int maxlen = len > b.len? len : b.len;
+		for(; i < maxlen; i++){
+			ret.s[i] = s[i] + jie;
+			ret.s[i] += b.s[i];
+			if(ret.s[i] >= 10){
+				ret.s[i] -= 10;
+				jie = 1;
+			}
+			else
+				jie = 0;
+		}
+		if(jie){
+			ret.s[i] = 1;
+			ret.len = i+1;
+		}
+		else
+			ret.len = i;
+		return ret;
+	}
+	unsignedHP operator -(unsignedHP &b){
+		int i = 0; 
+		int jie = 0;
+		unsignedHP ret;
+		for(; i < len; i++){
+			ret.s[i] = s[i] - jie;
+			ret.s[i] -= b.s[i];
+			if(ret.s[i] < 0){
+				ret.s[i] += 10;
+				jie = 1;
+			}
+			else
+				jie = 0;
+		}
+		i = len - 1;
+		while(i >= 0 && ret.s[i] == 0)
+			i--;
+		ret.len = i+1;
+		return ret;
+	}
+	
+public:
+	int s[MAXN];
+	int len;
+};
+
+class HP{
+public:
+	friend ostream& operator << (ostream& cout, const HP& a);
+	HP():sign(1){
+	}
+	HP(const char* s){
+		if(s[0] == '-')
+			sign = -1;
+		else
+			sign = 1;
+		if(s[0] == '-' || s[0] == '+')
+			d = unsignedHP(s+1);
+		else
+			d = unsignedHP(s);
+	}
+	HP(const HP& b){
+		sign = b.sign;
+		d = b.d;
+	}
+	HP& operator = (const HP& b){
+		sign = b.sign;
+		d = b.d;
+		return *this;
+	}
+	~HP(){
+	}
+	bool isZero(){
+		return d.isZero();
+	}
+	HP operator-(HP& b){
+		HP c;
+		if(sign == -1 && b.sign == 1){
+			c.sign = -1;
+			c.d = d + b.d;
+		}
+		else if(sign == -1 && b.sign == -1){
+			if(d > b.d){
+				c.sign = -1;
+				c.d = d - b.d;
+			}
+			else{
+				c.sign = 1;
+				c.d = b.d - d;
+			}
+		}
+		else if(sign == 1 && b.sign == -1){
+			sign = 1;
+			c.d = d + b.d;
+		}
+		else  if(sign == 1 && b.sign == 1){
+			if(d > b.d){
+				c.sign = 1;
+				c.d = d - b.d;
+			}
+			else{
+				c.sign = -1;
+				c.d = b.d - d;
+			}
+		}
+		if(c.isZero())
+			c.sign = 1;
+		return c;
+	}
+	HP operator+(HP &b){
+		if(this->isZero()) return b;
+		if(b.isZero()) return (*this);
+		HP c;
+		if(sign == -1 && b.sign == -1){
+			c.sign = -1;
+			c.d = d + b.d;
+		}
+		else if(sign == 1 && b.sign == 1){
+			c.sign = 1;
+			c.d = d + b.d;
+		}
+		else if(sign == 1 && b.sign == -1){
+			if(b.d <= d){
+				c.sign = 1;
+				c.d = d - b.d;
+			}
+			else{
+				c.sign = -1;
+				c.d = b.d - d;
+			}
+		}
+		else if(sign == -1 && b.sign == 1){
+			if(d <= b.d){
+				c.sign = 1;
+				c.d = b.d - d;
+			}
+			else{
+				c.sign = -1;
+				c.d = d - b.d;
+			}
+		}
+		return c;
+	}
+public:
+	unsignedHP d;
+	int sign;
+};
+
+ostream& operator << (ostream& cout, HP& a);
+ostream& operator << (ostream& cout, unsignedHP& a);
+ostream& operator << (ostream& cout, HP& a){
+	if(a.sign == -1)
+		cout << "-";
+	cout << a.d;
+	return cout;
+}
+
+ostream& operator << (ostream& cout, unsignedHP& a){
+	if(a.isZero()){
+		cout << 0;
+	}
+	else{
+		for(int i = a.len-1; i >= 0; i--){
+			cout << a.s[i];
+		}
+	}
+	return cout;
+}
+
 int main(){
-	char A[502];
-	char B[502];
-	memset(A, 0, 502);
-	memset(B, 0, 502);
-	scanf("%s %s", &A, &B);
-	lA = strlen(A);
-	lB = strlen(B);
-	int diff = lA - lB;
-	int carry = 0;
-	char C[502];
-	for(int i = lB - 1, j = i + diff; i >= 0 && j >= 0; i++){
-		C[i]
-		;
+	char s1[MAXN];
+	char s2[MAXN];
+	memset(s1, 0, MAXN);
+	memset(s2, 0, MAXN);
+	while(scanf("%s %s",s1,s2)!= EOF){
+		HP A = s1;
+		HP B = s2;
+		HP C = A + B;
+		cout <<C << endl;
+		memset(s1, 0, MAXN);
+		memset(s2, 0, MAXN);
 	}
 	return 0;
+}
+
+
+//version from others
+#include<stdio.h> 
+#include<string.h> 
+  
+int compare(char *str_a,char *str_b) 
+{ 
+    int len_a, len_b; 
+    len_a = strlen(str_a);          //分别获取大数的位数进行比较 
+    len_b = strlen(str_b); 
+  
+    if ( strcmp(str_a, str_b) == 0 )    //返回比较结果 
+        return 0; 
+    if ( len_a > len_b ) 
+        return 1; 
+    else if( len_a == len_b ) 
+        return strcmp(str_a, str_b); 
+    else
+        return -1; 
+} 
+  
+int main() 
+{ 
+    int f, n; 
+    int i, k, len_a, len_b; 
+    char str_a[1000], str_b[1000]; 
+    int num_a[1000] = {0};          //初始化大数数组，各位全清0 
+    int num_b[1000] = {0}; 
+    int num_c[1000]; 
+  
+    while (scanf("%s%s",str_a,str_b)!= EOF) //可进行多组测试 
+    { 
+        len_a = strlen(str_a);         //分别获得两个大数的位数 
+        len_b = strlen(str_b); 
+  
+        k = len_a > len_b? len_a:len_b;                    //获得最大的位数 
+        num_c[0] = 0; 
+        f = 0; 
+        n = compare(str_a,str_b); 
+  
+        for (i=0;i<len_a;i++)                   //颠倒存储 
+            num_a[i] = str_a[len_a-i-1] - '0'; 
+        for (i=0;i<len_b;i++) 
+            num_b[i] = str_b[len_b-i-1] - '0'; 
+  
+        for (i=0;i<k;i++)         //逐位进行减法 
+        { 
+            if (n>=0) 
+            { 
+                if (num_a[i] >= num_b[i]) 
+                    num_c[i] = num_a[i] - num_b[i]; 
+                else
+                { 
+                    num_c[i] = num_a[i] - num_b[i] + 10; 
+                    num_a[i+1]--; 
+                } 
+            } 
+            else
+            { 
+                if ( num_b[i] >= num_a[i]) 
+                    num_c[i] = num_b[i] - num_a[i]; 
+                else
+                { 
+                    num_c[i] = num_b[i] - num_a[i] + 10; 
+                    num_b[i+1]--; 
+                } 
+            } 
+  
+        } 
+  
+        if (n<0)            //按要求打印 
+            printf("-"); 
+        for (i=k-1; i>=0; i--) 
+        { 
+            if (num_c[i]) 
+                f = 1; 
+            if (f || i == 0 ) 
+                printf("%d",num_c[i]); 
+        } 
+        printf("\n"); 
+        for (i=0;i<k;i++)               //清0. 进行下一次操作 
+        { 
+            num_a[i] = 0; 
+            num_b[i] = 0; 
+        } 
+    } 
+  
+    return 0; 
+  
 }
 
 //1214 线段覆盖
