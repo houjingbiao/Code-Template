@@ -1,3 +1,6 @@
+//
+
+
 //3115 高精度练习之减法 
 //3116 高精度练习之加法 
 //3116 高精度练习之乘法 
@@ -16,7 +19,7 @@
 #include <math.h>
 #include <string.h>
 using namespace std;
-#define MAXN 505
+#define MAXN 1005
 
 class unsignedHP;
 class HP;
@@ -53,7 +56,7 @@ public:
 	~unsignedHP(){
 	}
 
-	bool isZero(){
+	bool isZero() const {
 		if(len == 0 || len == 1 && s[0] == 0)
 			return true;
 		return false;
@@ -117,11 +120,34 @@ public:
 		ret.len = i+1;
 		return ret;
 	}
+	unsignedHP operator*(const unsignedHP &b){
+		unsignedHP c;
+		int j = 0;
+		for(int i = 0; i < len; i++){
+			unsignedHP c1;
+			int carry = 0;//hjb: the scope of every variable
+			for(j = 0; j < b.len; j++){
+				int t1 = s[i]*b.s[j] + carry;
+				c1.s[i+j] = t1%10;
+				carry = t1/10;
+			}
+			if(carry > 0){
+				c1.len = i + j + 1;
+				c1.s[i+j] = carry;
+			}
+			else{
+				c1.len = i + j;
+			}
+			c = c+c1;
+		}
+		return c;
+	}
 	
 public:
 	int s[MAXN];
 	int len;
 };
+
 
 class HP{
 public:
@@ -149,7 +175,7 @@ public:
 	}
 	~HP(){
 	}
-	bool isZero(){
+	bool isZero() const{
 		return d.isZero();
 	}
 	HP operator-(HP& b){
@@ -220,6 +246,14 @@ public:
 		}
 		return c;
 	}
+	HP operator*(const HP &b){
+		if(isZero()) return *this;
+		if(b.isZero()) return b;
+		HP c;
+		c.sign = sign*b.sign;
+		c.d = d * b.d;
+		return c;
+	}
 public:
 	unsignedHP d;
 	int sign;
@@ -254,14 +288,13 @@ int main(){
 	while(scanf("%s %s",s1,s2)!= EOF){
 		HP A = s1;
 		HP B = s2;
-		HP C = A + B;
+		HP C = A * B;
 		cout <<C << endl;
 		memset(s1, 0, MAXN);
 		memset(s2, 0, MAXN);
 	}
 	return 0;
 }
-
 
 //version from others
 #include<stdio.h> 
