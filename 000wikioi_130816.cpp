@@ -1,5 +1,81 @@
-//
+//1068 乌龟棋
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int N, M;
+	scanf("%d%d", &N, &M);
+	vector<int> board;
+	for(int i = 0; i < N; i++){
+		int x;
+		scanf("%d", &x);
+		board.push_back(x);
+	}
+	vector<int> cards;
+	for(int i = 0; i < M; i++){
+		int x;
+		scanf("%d", &x);
+		cards.push_back(x);
+	}
+	vector<vector<int> > dp(N+1, vector<int>(M+1, 0));
+	for(int i = 0; i <= M; i++)
+		dp[0][j] = board[0];
+	for()
+	return 0;
+}
 
+//1014 装箱问题 
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int v, n;
+	scanf("%d", &v);
+	scanf("%d", &n);
+	vector<vector<int> > dp(n+1, vector<int>(v+1, 0));
+	for(int i = 0; i < dp[0].size(); i++){
+		dp[n][i] = 0;
+	}	
+	vector<int> objects;
+	for(int i = 0; i < n; i++){
+		int x;
+		scanf("%d", &x);
+		objects.push_back(x);
+	}
+	for(int i = n-1; i >= 0; i--){
+		for(int j = 0; j < dp[0].size(); j++){
+			if(j >= objects[i] && dp[i+1][j-objects[i]]+objects[i] <= v)
+				dp[i][j] = max(dp[i+1][j], dp[i+1][j-objects[i]]+objects[i]);
+			else dp[i][j] = dp[i+1][j];
+		}
+	}
+	printf("%d\n", v-dp[0][v]);
+	return 0;
+}
 
 //3115 高精度练习之减法 
 //3116 高精度练习之加法 
@@ -20,7 +96,6 @@
 #include <string.h>
 using namespace std;
 #define MAXN 1005
-
 class unsignedHP;
 class HP;
 
@@ -669,14 +744,19 @@ int main(){
 //1012 最大公约数和最小公倍数问题
 #include <stdio.h>
 int gcd(int m, int n){
-	int a;
 	while(m%n){
-		a = m%n;
+		int a = m%n;
 		m = n;
 		n = a;
 	}
 	return n;
 }
+
+int gcd_rec(int m, int n){
+	if(m%n) return gcd_rec(n, m%n);
+	else return n;
+}
+
 int main(){
 	int x0, y0;
 	scanf("%d %d", &x0, &y0);
@@ -695,13 +775,13 @@ int main(){
 	int x = y0/x0;
 	int count = 2; //hjb: 1*20 = 20*1 = 20
 	for(int i = 2; i <= x/2; i++){
-		if(x%i == 0 && gcd(i, x/i) == 1)
+		//if(x%i == 0 && gcd(i, x/i) == 1)
+		if(x%i == 0 && gcd_rec(i, x/i) == 1)
 			count++;
 	}
 	printf("%d", count);
 	return 0;
 }
-
 
 
 //1474 十进制转m进制 
@@ -881,8 +961,6 @@ int main(){
 	return 0;
 }
 
-
-
 //1842 递归第一次 
 #include <stdio.h>
 int recusive_f(int n){
@@ -955,8 +1033,6 @@ int main(){
 	delete[] tree;
 	return 0;
 }
-
-
 
 //1160 蛇形矩阵
 // version simulation
@@ -1084,7 +1160,7 @@ int main(){
 
 
 
-//version 1: iterate
+//version 1: iteration
 #include <stdio.h>
 int main(){
 	int n;
@@ -1129,8 +1205,6 @@ int main(){
 	return 0;
 }
 
-
-
 // 1011 数的计算 
 #include <stdio.h>
 #include <queue>
@@ -1151,8 +1225,6 @@ int main(){
 	printf("%d", count);
 	return 0;
 }
-
-
 
 //1076 排序 
 #include <stdio.h>
@@ -1274,7 +1346,6 @@ void reverse(char* b, char* e){
 int main(){
 	char s[100];
 	memset(s, 0, 100);
-	//scanf("%99[^n]", s);
 	gets(s);
 	char* p = s;
 	while(*p == ' ') p++;
@@ -1378,41 +1449,34 @@ int main(){
 	if(scanf("%s%d", &s, &base)){
 		long num = 0;
 		int len = strlen(s);
-		if(base > 9){
-			for(int i = 0; i < len; i++){
-				int digit;
-				switch(s[i]){
-					case 'F':
-						digit = 15;
-						break;
-					case 'E':
-						digit = 14;
-						break;
-					case 'D':
-						digit = 13;
-						break;
-					case 'C':
-						digit = 12;
-						break;
-					case 'B':
-						digit = 11;
-						break;
-					case 'A':
-						digit = 10;
-						break;
-					default:
-						digit = s[i] - '0';
-						break;
-				}
-				num = num*base + digit;
+		for(int i = 0; i < len; i++){
+			int digit;
+			switch(s[i]){
+				case 'F':
+					digit = 15;
+					break;
+				case 'E':
+					digit = 14;
+					break;
+				case 'D':
+					digit = 13;
+					break;
+				case 'C':
+					digit = 12;
+					break;
+				case 'B':
+					digit = 11;
+					break;
+				case 'A':
+					digit = 10;
+					break;
+				default:
+					digit = s[i] - '0';
+					break;
 			}
+			num = num*base + digit;
 		}
-		else{
-			for(int i = 0; i < len; i++){
-				num = num*base + s[i] - '0';
-			}
-		}
-		printf("%d", num);
+		printf("%ld", num);
 	}
 	return 0;
 }
