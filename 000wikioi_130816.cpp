@@ -1,3 +1,94 @@
+//1154 能量项链
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int N;
+	cin >> N;
+	vector<long long> pearl;
+	for(int i = 0; i < N; i++){
+		long long x;//hjb: define x
+		cin >> x;
+		pearl.push_back(x);
+	}
+	pearl.insert(pearl.end(), pearl.begin(), pearl.end());
+	pearl.insert(pearl.end(), pearl.begin(), pearl.end());
+	vector<vector<long long> > dp(2*N, vector<long long>(2*N, 0));
+	for(int i = 0; i < 2*N - 2; i++)
+		dp[i][i+1] = pearl[i]*pearl[i+1]*pearl[i+2];
+	for(int len = 3; len <= N; len++){
+		for(int i = 0; i < 2*N-len; i++){
+			int j = i + len - 1;
+			for(int k = i; k < j; k++)//hjb: warning the bound
+				dp[i][j] = max(dp[i][j], pearl[i]*pearl[k+1]*pearl[j+1]+dp[i][k]+dp[k+1][j]);
+		}
+	}
+	long long ret = 0;
+	for(int i = 0; i < N; i++)//hjb: need find the largest
+		ret = max(ret, dp[i][i+N-1]);
+	cout << ret<<endl;
+	return 0;
+}
+
+
+//1048 石子归并 
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int n;
+	scanf("%d", &n);
+	vector<int> arr;
+	for(int i = 0; i < n; i++){
+		int x;
+		scanf("%d", &x);
+		arr.push_back(x);
+	}
+	vector<vector<int> > dp(n, vector<int>(n, 0x7FFFFFFF));//hjb: the initialized value, and the scope of maximum value
+	vector<vector<int> > s(n, vector<int>(n, 0));
+	for(int i = 0; i < n; i++){
+		dp[i][i] = 0;
+		s[i][i] = arr[i];
+	}
+	for(int len = 2; len <= n; len++){
+		for(int i = 0; i <= n-len; i++){
+			int j = i + len - 1;
+			s[i][j] = s[i][i]+s[i+1][j];
+			for(int k = i; k < j; k++){
+				dp[i][j] = min(dp[i][j], dp[i][k]+dp[k+1][j]);
+			}
+			dp[i][j] += s[i][j];
+		}
+	}
+	printf("%d", dp[0][n-1]);//hjb: colon
+	return 0;
+}
+
+
 //1576 线段覆盖 2
 #include <stdio.h>
 #include <iostream>
