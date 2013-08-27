@@ -1,3 +1,176 @@
+//1576 线段覆盖 2
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+typedef struct seg{
+	int a, b, c;
+}segment;
+bool compare(segment s1, segment s2){
+	return s1.b < s2.b || s1.b == s2.b && s1.a < s2.a;
+}
+int main(){
+	int n;
+	scanf("%d", &n);
+	vector<segment> segments;
+	map<int, int> m;
+	for(int i = 0; i < n; i++){
+		segment seg;
+		scanf("%d%d%d", &seg.a, &seg.b, &seg.c);
+		segments.push_back(seg);
+		m[seg.a]++;
+		m[seg.b]++;
+	}
+	vector<int> points;
+	map<int, int>::iterator ite = m.begin();
+	for(; ite != m.end(); ite++){
+		points.push_back(ite->first);
+	}
+	sort(points.begin(), points.end());
+	m.clear();
+	for(int i = 0; i < points.size(); i++){
+		m[points[i]] = i;
+	}
+
+	for(int i = 0; i < segments.size(); i++){
+		segments[i].a = m[segments[i].a];
+		segments[i].b = m[segments[i].b];
+	}
+	sort(segments.begin(), segments.end(), compare);
+	vector<int> dp(points.size(), -1);
+	
+	//dp
+	for(int i = 0; i < segments[0].b; i++)
+		dp[i] = 0;
+	int ret = dp[0];
+	int max_i = 0;
+	dp[segments[0].b] = segments[0].c;
+	for(int i = 1; i < segments.size(); i++){
+		if(segments[i].a < segments[0].b)
+			dp[segments[i].b] = max(dp[segments[i].b], segments[i].c);
+		else{
+			if(max_i < segments[i].a){
+				for(int j = max_i; j <= segments[i].a; j++){
+					if(ret < dp[j])
+						ret = dp[j];
+					else
+						dp[j] = ret;
+				}
+				max_i = segments[i].a;
+			}
+			dp[segments[i].b] = max(dp[segments[i].b], dp[segments[i].a] + segments[i].c);
+		}
+	}
+	
+	for(int i = max_i; i < points.size(); i++)
+		ret = max(ret, dp[i]);
+	printf("%d\n", ret);
+	return 0;
+}
+
+//1576 最长严格上升子序列
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int N;
+	scanf("%d", &N);
+	vector<int> arr;
+	for(int i = 0; i<N; i++){
+		int x;
+		scanf("%d", &x);
+		arr.push_back(x);
+	}
+	vector<int> dp(N, 1);
+	for(int i = 0; i < arr.size(); i++){
+		for(int j = 0; j < i; j++){
+			if(arr[j] < arr[i])
+				dp[i] = max(dp[j]+1, dp[i]);
+		}
+	}
+	int ret = dp[0];
+	for(int i = 1; i < dp.size(); i++){
+		ret = max(ret, dp[i]);
+	}
+	printf("%d", ret);
+	return 0;
+}
+
+//1044 拦截导弹 
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	vector<int> bombs;
+	int x;
+	while(scanf("%d", &x) != EOF && x){
+		bombs.push_back(x);
+	}
+	//long descendents
+	vector<int> dp2(bombs.size(), 1);
+	for(int i = 1; i < bombs.size(); i++){
+		for(int j = 0; j < i; j++){
+			if(bombs[j] > bombs[i]) dp2[i] = max(dp2[i], dp2[j]+1);
+		}
+	}
+	int maxb = dp2[0];
+	for(int i = 1; i < dp2.size(); i++){
+		if(maxb < dp2[i]) maxb = dp2[i];
+	}
+
+	//longest ascendents
+	vector<int> dp(bombs.size(), 1);
+	for(int i = 1; i < bombs.size(); i++){
+		for(int j = 0; j < i; j++){
+			if(bombs[j] < bombs[i]) dp[i] = max(dp[i], dp[j]+1);
+		}
+	}
+	int las = dp[0];
+	for(int i = 1; i < dp.size(); i++){
+		if(las < dp[i]) las = dp[i];
+	}
+
+	printf("%d\n", maxb);
+	printf("%d\n", las);
+	return 0;
+}
+
+
 //1068 乌龟棋
 #include <stdio.h>
 #include <iostream>
@@ -23,16 +196,40 @@ int main(){
 		scanf("%d", &x);
 		board.push_back(x);
 	}
-	vector<int> cards;
+	vector<int> cards(4, 0);
 	for(int i = 0; i < M; i++){
 		int x;
 		scanf("%d", &x);
-		cards.push_back(x);
+		cards[x-1]++;
 	}
-	vector<vector<int> > dp(N+1, vector<int>(M+1, 0));
-	for(int i = 0; i <= M; i++)
-		dp[0][j] = board[0];
-	for()
+	vector<vector<vector<vector<int> > > > dp(cards[0]+1, 
+		vector<vector<vector<int> > >(cards[1]+1, 
+		vector<vector<int> >(cards[2]+1, 
+		vector<int>(cards[3]+1, 0))));
+	dp[0][0][0][0] = board[0];
+	for(int i1 = 0; i1 <= cards[0]; i1++){
+		for(int i2 = 0; i2 <= cards[1]; i2++){
+			for(int i3 = 0; i3 <= cards[2]; i3++){
+				for(int i4 = 0; i4 <= cards[3]; i4++){
+					int s1 = 0, s2 = 0, s3 = 0, s4 = 0;
+					int step = i1+i2*2+i3*3+i4*4;
+					if(i1 != 0)
+						s1 = dp[i1-1][i2][i3][i4];
+					if(i2 != 0)
+						s2 = dp[i1][i2-1][i3][i4];
+					if(i3 != 0)
+						s3 = dp[i1][i2][i3-1][i4];
+					if(i4 != 0)
+						s4 = dp[i1][i2][i3][i4-1];
+					dp[i1][i2][i3][i4] = max(s1, s2);
+					dp[i1][i2][i3][i4] = max(s3, dp[i1][i2][i3][i4]);
+					dp[i1][i2][i3][i4] = max(s4, dp[i1][i2][i3][i4]);
+					dp[i1][i2][i3][i4] += board[step];
+				}
+			}
+		}
+	}
+	printf("%d\n", dp[cards[0]][cards[1]][cards[2]][cards[3]]);
 	return 0;
 }
 
