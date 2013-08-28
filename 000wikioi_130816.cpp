@@ -1,3 +1,84 @@
+//1166 矩阵取数游戏 
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int> > matrix;
+	for(int i = 0; i < n; i++){
+		vector<int> board;
+		for(int j = 0; j < m; j++){
+			int x;
+			cin >> x;
+			board.push_back(x);
+		}
+		matrix.push_back(board);
+	}
+	
+	vector<int> pow(m+1, 0);
+	pow[0] = 1;
+	for(int i = 1; i < m+1; i++){
+		pow[i] = pow[i-1]*2;
+	}
+	vector<vector<long long> > dp(m, vector<long long>(m, 0));
+	dp[0][0] = matrix[0]*pow[1];
+	dp[m-1][m-1] = matrix[m-1]*pow[1];
+	for(int len = 2; len < n; len++){
+		for(int i = 0; i < m; m++){
+			if(i < len){
+				int j = i + len
+				for(int k = i; k < len; k++)
+					dp[i][] = 
+			}
+			else if(i+len < m){
+			}
+		}
+	}
+	vector<int> pow(m, 0);
+	pow[0] = 2;
+	for(int i = 1; i < m; i++){
+		pow[i] = pow[i-1]*2;
+	}
+	long long ret = 0;
+	for(int line = 0; line < n; line++){
+		
+		for(int i = 0; i < m; i++){
+			dp[i][0] = matrix[line][0] * pow[i];
+			dp[i][m-1] = matrix[line][m-1] * pow[i];
+		}
+		for(int i = 1; i < m; i++){
+			for(int j = 1; j < m-1; j++){
+				if(j-i <= 0 || j+i >= m-1)
+					dp[i][j] = max(dp[i-1][j-1], dp[i-1][j+1]) + matrix[line][j]*pow[i];
+			}
+		}
+		long long ans = 0;
+		for(int i = 0; i < m; i++){
+			ans = ans > dp[m-1][i]? ans : dp[m-1][i];
+		}
+		ret += ans;
+	}
+	cout << ret;
+	return 0;
+}
+
+
+
+
+
 //1154 能量项链
 #include <stdio.h>
 #include <iostream>
