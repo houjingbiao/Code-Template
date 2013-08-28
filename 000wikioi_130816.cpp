@@ -1,4 +1,8 @@
-//1166 矩阵取数游戏 
+
+
+
+
+//1010 过河卒
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -15,40 +19,374 @@
 #include <string.h>
 using namespace std;
 int main(){
+	int n, m, X, Y;
+	cin >> n >> m >> X >> Y;
+	vector<vector<int> > matrix(n+1, vector<int>(m+1, 1));
+	int controlPos[9][2] = {{0, 0}, {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
+	for(int i = 0; i < 9; i++){
+		int nx = X+controlPos[i][0];
+		int ny = Y+controlPos[i][1];
+		if(nx >= 0 && nx <= n && ny >= 0 && ny <= m)
+			matrix[nx][ny] = 0;
+	}
+	if(matrix[0][0] == 0){
+		cout << 0 << endl;
+		return 0;
+	}
+	//initialize
+	matrix[0][0] = 1;
+	for(int i = 1; i <= m; i++){//hjb: the start of index
+		if(matrix[0][i] == 1)
+			matrix[0][i] = matrix[0][i-1];
+	}
+	for(int i = 1; i <= n; i++){//hjb: the start of index
+		if(matrix[i][0] == 1)
+			matrix[i][0] = matrix[i-1][0];
+	}
+	//dp
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= m; j++){
+			if(matrix[i][j] == 1)
+				matrix[i][j] = matrix[i-1][j] + matrix[i][j-1];
+		}
+	}
+	cout << matrix[n][m]<< endl;
+	return 0;
+}
+
+//1166 矩阵取数游戏 
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+#define MAXN 1005
+class unsignedHP{
+public:
+	friend ostream& operator << (ostream& cout, const unsignedHP& a);
+	unsignedHP():len(1){
+		memset(s, 0, MAXN*sizeof(int));
+	}
+	unsignedHP(const char* str):len(0){
+		if(str == NULL){
+			len = 0;
+			return;
+		}
+		memset(s, 0, MAXN*sizeof(int));
+		len = strlen(str);
+		for(int i = 0; i < len; i++){
+			s[i] = str[len - 1 - i] - '0';
+		}
+	}
+	unsignedHP(const unsignedHP& b){
+		len = b.len;
+		for(int i = 0; i < len; i++)
+			s[i] = b.s[i];
+	}
+
+	unsignedHP& operator = (const unsignedHP &b){
+		len = b.len;
+		memcpy(s, b.s, len*sizeof(int));
+		return *this;
+	}
+
+	~unsignedHP(){
+	}
+
+	bool isZero() const {
+		if(len == 0 || len == 1 && s[0] == 0)
+			return true;
+		return false;
+	}
+
+	bool operator <= (const unsignedHP &b){
+		if(len == b.len){
+			int i = len - 1;
+			while(i >= 0 && s[i] == b.s[i]){
+				i--;
+			}
+			if(i < 0) return true;
+			else return s[i] <= b.s[i];
+		}
+		return len < b.len;
+	}
+
+	bool operator > (const unsignedHP &b){
+		return !(*this <= b);
+	}
+	unsignedHP operator +(const unsignedHP &b){
+		int i = 0; 
+		int jie = 0;
+		unsignedHP ret;
+		int maxlen = len > b.len? len : b.len;
+		for(; i < maxlen; i++){
+			ret.s[i] = s[i] + jie;
+			ret.s[i] += b.s[i];
+			if(ret.s[i] >= 10){
+				ret.s[i] -= 10;
+				jie = 1;
+			}
+			else
+				jie = 0;
+		}
+		if(jie){
+			ret.s[i] = 1;
+			ret.len = i+1;
+		}
+		else
+			ret.len = i;
+		return ret;
+	}
+	unsignedHP operator -(unsignedHP &b){
+		int i = 0; 
+		int jie = 0;
+		unsignedHP ret;
+		for(; i < len; i++){
+			ret.s[i] = s[i] - jie;
+			ret.s[i] -= b.s[i];
+			if(ret.s[i] < 0){
+				ret.s[i] += 10;
+				jie = 1;
+			}
+			else
+				jie = 0;
+		}
+		i = len - 1;
+		while(i >= 0 && ret.s[i] == 0)
+			i--;
+		ret.len = i+1;
+		return ret;
+	}
+	unsignedHP operator*(const unsignedHP &b){
+		unsignedHP c;
+		int j = 0;
+		for(int i = 0; i < len; i++){
+			unsignedHP c1;
+			int carry = 0;//hjb: the scope of every variable
+			for(j = 0; j < b.len; j++){
+				int t1 = s[i]*b.s[j] + carry;
+				c1.s[i+j] = t1%10;
+				carry = t1/10;
+			}
+			if(carry > 0){
+				c1.len = i + j + 1;
+				c1.s[i+j] = carry;
+			}
+			else{
+				c1.len = i + j;
+			}
+			c = c+c1;
+		}
+		return c;
+	}
+	
+public:
+	int s[MAXN];
+	int len;
+};
+
+
+class HP{
+public:
+	friend ostream& operator << (ostream& cout, const HP& a);
+	HP():_sign(1){
+	}
+	HP(const char* s){
+		if(s[0] == '-')
+			_sign = -1;
+		else
+			_sign = 1;
+		if(s[0] == '-' || s[0] == '+')
+			d = unsignedHP(s+1);
+		else
+			d = unsignedHP(s);
+	}
+	HP(const HP& b){
+		_sign = b._sign;
+		d = b.d;
+	}
+	HP& operator = (const HP& b){
+		_sign = b._sign;
+		d = b.d;
+		return *this;
+	}
+	~HP(){
+	}
+	bool isZero() const{
+		return d.isZero();
+	}
+	bool operator <= (HP &b){
+		return (_sign == -1 && b._sign == 1 
+			|| _sign == 1 && d <= b.d 
+			|| _sign == -1 && b.d <= d);
+	}	
+	bool operator > (HP &b){
+		return true; //!(*this || b);
+	}
+	HP operator-(HP& b){
+		HP c;
+		if(_sign == -1 && b._sign == 1){
+			c._sign = -1;
+			c.d = d + b.d;
+		}
+		else if(_sign == -1 && b._sign == -1){
+			if(d > b.d){
+				c._sign = -1;
+				c.d = d - b.d;
+			}
+			else{
+				c._sign = 1;
+				c.d = b.d - d;
+			}
+		}
+		else if(_sign == 1 && b._sign == -1){
+			_sign = 1;
+			c.d = d + b.d;
+		}
+		else  if(_sign == 1 && b._sign == 1){
+			if(d > b.d){
+				c._sign = 1;
+				c.d = d - b.d;
+			}
+			else{
+				c._sign = -1;
+				c.d = b.d - d;
+			}
+		}
+		if(c.isZero())
+			c._sign = 1;
+		return c;
+	}
+	HP operator+(HP &b){
+		if(this->isZero()) return b;
+		if(b.isZero()) return (*this);
+		HP c;
+		if(_sign == -1 && b._sign == -1){
+			c._sign = -1;
+			c.d = d + b.d;
+		}
+		else if(_sign == 1 && b._sign == 1){
+			c._sign = 1;
+			c.d = d + b.d;
+		}
+		else if(_sign == 1 && b._sign == -1){
+			if(b.d <= d){
+				c._sign = 1;
+				c.d = d - b.d;
+			}
+			else{
+				c._sign = -1;
+				c.d = b.d - d;
+			}
+		}
+		else if(_sign == -1 && b._sign == 1){
+			if(d <= b.d){
+				c._sign = 1;
+				c.d = b.d - d;
+			}
+			else{
+				c._sign = -1;
+				c.d = d - b.d;
+			}
+		}
+		return c;
+	}
+	HP operator*(const HP &b){
+		if(isZero()) return *this;
+		if(b.isZero()) return b;
+		HP c;
+		c._sign = _sign*b._sign;
+		c.d = d * b.d;
+		return c;
+	}
+public:
+	unsignedHP d;
+	int _sign;
+};
+
+ostream& operator << (ostream& cout, HP& a);
+ostream& operator << (ostream& cout, unsignedHP& a);
+ostream& operator << (ostream& cout, HP& a){
+	if(a._sign == -1)
+		cout << "-";
+	cout << a.d;
+	return cout;
+}
+
+ostream& operator << (ostream& cout, unsignedHP& a){
+	if(a.isZero()){
+		cout << 0;
+	}
+	else{
+		for(int i = a.len-1; i >= 0; i--)
+			cout << a.s[i];
+	}
+	return cout;
+}
+
+int main(){
 	int n, m;
 	cin >> n >> m;
-	vector<vector<int> > matrix;
+	vector<vector<HP> > matrix;
 	for(int i = 0; i < n; i++){
-		vector<int> board;
+		vector<HP> board;
 		for(int j = 0; j < m; j++){
-			int x;
-			cin >> x;
+			char str[10];
+			memset(str, 0, 10);
+			cin >> str;
+			HP x(str);
 			board.push_back(x);
 		}
 		matrix.push_back(board);
 	}
-	
-	vector<int> pow(m+1, 0);
-	pow[0] = 1;
-	for(int i = 1; i < m+1; i++){
-		pow[i] = pow[i-1]*2;
-	}
-	vector<vector<long long> > dp(m+1, vector<long long>(m, 0));
-	dp[1][0] = matrix[0]*pow[1];
-	dp[1][m-1] = matrix[m-1]*pow[1];
-	for(int time = 2; time <= m; time++){
-		for(int i = 0; i < m; m++){
-			for(int k = 1; k < time; k++)
-				dp[time][i] = max(dp[time][i], dp[k][] + dp[][]);
+	vector<HP> pow2(m+1);
+	pow2[0] = "1";
+	for(int i = 1; i<=m; i++)
+		pow2[i] = HP("2") * pow2[i-1];
+	HP ret("0");
+	for(int line = 0; line < n; line++){
+		vector<vector<HP> > dp(m+1, vector<HP>(m+1, HP()));
+		for(int i = 1; i <= m; i++){
+			dp[i][0] = matrix[line][i-1]*pow2[i];
+			dp[i][0] = dp[i][0] + dp[i-1][0];
+			dp[0][i] = matrix[line][m-i]*pow2[i];
+			dp[0][i] = dp[0][i] + dp[0][i-1];
 		}
+		for(int i = 1; i <= m; i++){
+			for(int j = 1; j <= m; j++){
+				if(i+j <= m){
+					HP t1 = matrix[line][i-1]*pow2[i+j];
+					t1 = t1 + dp[i-1][j];
+					HP t2 = matrix[line][m-j]*pow2[i+j];
+					t2 = t2 + dp[i][j-1];
+					if(t1 <= t2)
+						dp[i][j] = t2;
+					else
+						dp[i][j] = t1;
+				}
+			}
+		}
+		HP ans("0");
+		for(int i = 0; i <= m; i++){
+			int j = m - i;
+			if(ans <= dp[i][j])
+				ans = dp[i][j];
+		}
+		ret = ret + ans;
 	}
-	cout << ret;
+	cout << ret << endl;
 	return 0;
 }
-
-
-
-
 
 //1154 能量项链
 #include <stdio.h>
