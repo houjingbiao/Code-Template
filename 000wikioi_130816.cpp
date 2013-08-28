@@ -33,43 +33,14 @@ int main(){
 	for(int i = 1; i < m+1; i++){
 		pow[i] = pow[i-1]*2;
 	}
-	vector<vector<long long> > dp(m, vector<long long>(m, 0));
-	dp[0][0] = matrix[0]*pow[1];
-	dp[m-1][m-1] = matrix[m-1]*pow[1];
-	for(int len = 2; len < n; len++){
+	vector<vector<long long> > dp(m+1, vector<long long>(m, 0));
+	dp[1][0] = matrix[0]*pow[1];
+	dp[1][m-1] = matrix[m-1]*pow[1];
+	for(int time = 2; time <= m; time++){
 		for(int i = 0; i < m; m++){
-			if(i < len){
-				int j = i + len
-				for(int k = i; k < len; k++)
-					dp[i][] = 
-			}
-			else if(i+len < m){
-			}
+			for(int k = 1; k < time; k++)
+				dp[time][i] = max(dp[time][i], dp[k][] + dp[][]);
 		}
-	}
-	vector<int> pow(m, 0);
-	pow[0] = 2;
-	for(int i = 1; i < m; i++){
-		pow[i] = pow[i-1]*2;
-	}
-	long long ret = 0;
-	for(int line = 0; line < n; line++){
-		
-		for(int i = 0; i < m; i++){
-			dp[i][0] = matrix[line][0] * pow[i];
-			dp[i][m-1] = matrix[line][m-1] * pow[i];
-		}
-		for(int i = 1; i < m; i++){
-			for(int j = 1; j < m-1; j++){
-				if(j-i <= 0 || j+i >= m-1)
-					dp[i][j] = max(dp[i-1][j-1], dp[i-1][j+1]) + matrix[line][j]*pow[i];
-			}
-		}
-		long long ans = 0;
-		for(int i = 0; i < m; i++){
-			ans = ans > dp[m-1][i]? ans : dp[m-1][i];
-		}
-		ret += ans;
 	}
 	cout << ret;
 	return 0;
