@@ -1,3 +1,136 @@
+//1018 单词接龙 
+#include <stdio.h>
+#include <string.h>
+
+#define MAXN 21
+#define MAXL 50
+
+char words[MAXN][MAXL];
+int visited[MAXN];
+char head;
+int ans = 0;
+
+bool canBeFirst(char head, int i){
+	if(head == words[i][0])
+		return true;
+	return false;
+}
+
+bool canBeVisited(char* pre, int i, int& inc){
+	if(visited[i] >= 2)
+		return false;
+	int l1 = (int)strlen(pre);
+	int l2 = (int)strlen(words[i]);
+	for(int overlap = 1; overlap < l1 && overlap < l2; overlap++){
+		int thelen = 0;
+		for(; thelen  < overlap; thelen++){
+			if(pre[l1 - overlap + thelen] != words[i][thelen])
+				break;
+		}
+		if(thelen == overlap){
+			inc = l2 - overlap;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool hasUnusedWords(int n){
+	for(int i = 0; i < n; i++)
+		if(!visited[i]) return true;
+	return false;
+}
+
+void dfs(int index, int len, int n){
+	visited[index]++;
+	int i = 0;
+	for(; i < n; i++){
+		int inc = 0;
+		if(canBeVisited(words[index], i, inc)){
+			dfs(i, len+inc, n);
+			visited[i]--;
+		}
+	}
+	if(i == n)
+		ans = ans > len ? ans : len;
+}
+
+int main(){
+	freopen("in.txt", "r", stdin);
+	int n;
+	scanf("%d", &n);
+	for(int i = 0; i < n; i++){
+		memset(words[i], 0, MAXL);
+		scanf("%s", words[i]);
+	}
+	char s[MAXL];
+	scanf("%s", &s);//hjb: input string then get its first character
+	head = s[0];
+	memset(visited, 0, MAXN);
+	for(int i = 0; i < n; i++){
+		int inc = 0;
+		if(canBeFirst(head, i)){
+			dfs(i, strlen(words[i]), n);
+			visited[i]--;
+		}
+	}
+	printf("%d\n", ans);
+	return 0;
+}
+
+
+
+//1116 四色问题
+#include <stdio.h>
+#include <string.h>
+
+#define MAXN 8+1
+int neighborhood[MAXN][MAXN];
+int color[MAXN];
+long count = 0;
+
+bool canColor(int point, int clr){
+	for(int i = 0; i < point; i++){
+		if(neighborhood[i][point] && color[i] == clr)
+			return false;
+	}
+	return true;
+}
+
+void dfs(int point, int clr, int n){
+	color[point] = clr;
+	if(point == n-1){
+		count++;
+		return;
+	}
+	for(int i = 1; i <= 4; i++){
+		if(canColor(point+1, i)){
+			dfs(point+1, i, n);
+			color[point+1] = 0;
+		}
+	}
+}
+
+int main(){
+	int n;
+	scanf("%d", &n);
+	for(int i = 0; i < n; i++)
+		for(int j = 0; j < n; j++)
+			scanf("%d", &neighborhood[i][j]);
+	memset(color, 0, sizeof(int)*MAXN);
+	count = 0;
+	for(int i = 1; i <= 4; i++){
+		if(canColor(0, i)){
+			dfs(0, i, n);
+			color[0] = 0;
+		}
+	}
+	printf("%ld\n", count);
+	return 0;
+}
+
+
+
 //1294 全排列 
 #include <stdio.h>
 #include <string.h>
