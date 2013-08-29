@@ -1,4 +1,22 @@
-
+//1039 数的划分 
+#include <stdio.h>
+#include <string.h>
+int main(){
+	int n, k, g[10][205];
+	while(scanf("%d%d", &n, &k) != EOF){
+		memset(g, 0, sizeof(g));
+		for(int j = 0; j <= n; j++)
+			g[1][j] = 1;
+		for(int i = 2; i <= k; i++)
+			for(int j = 0; j <= n-k; j++)
+				if(j >= i)
+					g[i][j] = g[i-1][j] + g[i][j-i];
+				else
+					g[i][j] = g[i-1][j];
+		printf("%d\n", g[k][n-k]);
+	}
+	return 0;
+}
 
 
 //1018 单词接龙 
