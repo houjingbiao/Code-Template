@@ -1,5 +1,325 @@
+//1294 全排列 
+#include <stdio.h>
+#include <string.h>
+#include <vector>
+using namespace std;
+
+void print(vector<int> &pattern){
+	for(int i = 0; i < pattern.size(); i++){
+		printf("%d ", pattern[i]);
+	}
+	printf("\n");
+}
+
+void dfs(int i, vector<int> &pattern, bool *visited, int n){
+	pattern.push_back(i);
+	visited[i] = true;
+	if(pattern.size() == n){
+		print(pattern);
+		return;
+	}
+	for(int j = 1; j <= n; j++){ //hjb: start from 1
+		if(!visited[j]){
+			dfs(j, pattern, visited, n);
+			pattern.pop_back();
+			visited[j] = false;
+		}
+	}
+}
+
+int main(){
+	int n;
+	scanf("%d", &n);
+	bool* visited = new bool[n+1];
+	for(int i = 0; i <= n; i++)
+		visited[i] =false;
+	for(int i = 1; i <= n; i++){
+		vector<int> pattern;
+		if(!visited[i]){
+			dfs(i, pattern, visited, n);
+			pattern.pop_back();
+			visited[i] = false;
+		}
+	}
+	return 0;
+}
 
 
+
+
+//1017 乘积最大
+#include <stdio.h>
+#include <string.h>
+
+#define max(a, b) (a > b? a : b)
+#define MAXN 41
+#define MAXK 7
+
+char a[MAXN];
+long long dp[MAXK][MAXN];
+
+long a2i(const char* s, int b, int e){
+	long ret = 0;
+	while(b < e){
+		ret = (s[b] - '0')+ ret*10;//hjb: multiply 10
+		b++;
+	}
+	return ret;
+}
+int main(){
+	int N, K;
+	scanf("%d%d", &N, &K);
+	memset(a, 0, MAXN); // hjb: initializing
+	scanf("%s", &a); //hjb: a is a string
+	for(int i = 0; i < K+1; i++)
+		for(int j = 0; j < N+1; j++)
+			dp[i][j] = 1;
+			
+	for(int i = 0; i < N-K; i++){//the 0th star is put behind the ith letter
+		dp[0][i] = a2i(a, 0, i+1);
+	}
+	for(int i = 1; i < K; i++){
+		for(int j = i; j < N-K+i; j++){
+			for(int k = i - 1; k < N-K+i-1; k++)
+				dp[i][j] = max(dp[i-1][k]*a2i(a, k+1, j+1), dp[i][j]);
+		}
+	}
+	long long ret = -100000;
+	for(int i = K-1; i < N-1; i++)
+		ret = max(ret, dp[K-1][i]*a2i(a, i+1, N));
+	printf("%lld", ret);
+	return 0;
+}
+
+
+
+//1220 数字三角形
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int n;
+	cin >> n;
+	vector<int> triangle;
+	int count = n*(n+1)/2;
+	for(int i = 0; i < count; i++){//hjb: the number of input
+		int x;
+		cin >> x;
+		triangle.push_back(x);
+	}
+	int pre_b = 0;
+	int cur_b = 1;
+	for(int i = 2; i <= n; i++){
+		triangle[cur_b] += triangle[pre_b];
+		triangle[cur_b+i-1] += triangle[pre_b+i-2];
+		for(int j = 1; j < i-1; j++)
+			triangle[cur_b+j] += max(triangle[pre_b+j-1], triangle[pre_b+j]);//hjb: chech every variable
+		pre_b = cur_b;
+		cur_b += i;
+	}
+	int ret = 0xFFFFFFFF;//hjb: negitive,the scope for all the numbers
+	for(int i = 1; i <= n; i++){
+		ret = max(triangle[triangle.size()-i], ret);//hjb: size() is a function
+	}
+	cout << ret; //the scope of the result
+	return 0;
+}
+
+//version 2: matrix and from bottom to top
+#include <stdio.h>   
+int dp[101][101];  
+int Max(int x, int y)  
+{  
+    return x > y ? x : y;  
+}  
+int main()  
+{  
+    int n;  
+    scanf("%d", &n);  
+      
+    for(int i = 1; i <= n; i++)  
+        for(int j = 1; j <= i; j++)  
+            scanf("%d", &dp[i][j]);         
+              
+        for(int i = n; i >= 1; i--)  
+            for(int j = 1; j < i; j++)  
+               dp[i - 1][j] += Max(dp[i][j], dp[i][j + 1]);  
+        printf("%d\n", dp[1][1]);  //hjb: it doesn't need to find the maximum
+        return 0;  
+}
+
+
+//1219 骑士游历
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+int main(){
+	int n, m;
+	int x1, y1, x2, y2;
+	cin >> n >> m;
+	cin >> x1 >> y1 >> x2 >> y2;
+	vector<vector<long long> > matrix(n+1, vector<long long>(m+1, 0));
+	matrix[y1][x1] = 1;
+	int diff[4][2] = {{-2, -1}, {2, -1}, {-1, -2}, {1, -2}};
+	for(int x = x1+1; x <= x2; x++){
+		for(int y = 1; y <= m; y++){
+			for(int i = 0; i < 4; i++){//hjb: varialbes for counter
+				int prex = x+diff[i][1];
+				int prey = y+diff[i][0];
+				if(prey >= 1 && prey <= n)
+					matrix[y][x] += matrix[prey][prex];
+			}
+		}
+	}
+	cout << matrix[y2][x2];//hjb: the scope of the returned value
+	return 0;
+}
+
+
+//1169 传纸条
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <map>
+#include <bitset>
+#include <stack>
+#include <set>
+#include <algorithm>
+#include <math.h>
+#include <string.h>
+using namespace std;
+//version 1: four dimension dp
+int main(){
+	int m, n;
+	scanf("%d%d",&m, &n);
+	vector<vector<int> > matrix(m+1, vector<int>(n+1, 0));
+	for(int i = 1; i <= m; i++){
+		for(int j = 1; j <= n; j++){
+			scanf("%d", &matrix[i][j]);
+		}
+	}
+	vector<vector<vector<vector<int> > > > dp(m+1, 
+		vector<vector<vector<int> > >(n+1, 
+		vector<vector<int> >(m+1, 
+		vector<int>(n+1, 0))));
+	for(int i1 = 1; i1 <= m; i1++){
+		for(int j1 = 1; j1 <= n; j1++){
+			for(int i2 = 1; i2 <= i1; i2++){
+				for(int j2 = 1; j2 <= j1; j2++){
+					dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1-1][j1][i2-1][j2]);
+					dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1][j1-1][i2][j2-1]);
+					dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1][j1-1][i2-1][j2]);
+					dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1-1][j1][i2][j2-1]);
+					if(i1==i2 && j1==j2) dp[i1][j1][i2][j2] += matrix[i1][j1];//因为重复路线只加了一次，所以必然被淘汰
+					else dp[i1][j1][i2][j2] += matrix[i1][j1] + matrix[i2][j2];
+				}
+			}
+		}
+	}
+	printf("%d\n", dp[m][n][m][n]);
+	return 0;
+}
+
+//version 2: 
+int main(){
+	freopen("in.txt", "r", stdin);
+	int m, n;
+	scanf("%d%d",&m, &n);
+	vector<vector<int> > matrix(m+1, vector<int>(n+1, 0));
+	for(int i = 1; i <= m; i++){
+		for(int j = 1; j <= n; j++){
+			scanf("%d", &matrix[i][j]);
+		}
+	}
+	vector<vector<vector<vector<int> > > > dp(m+1, 
+		vector<vector<vector<int> > >(n+1, 
+		vector<vector<int> >(m+1, 
+		vector<int>(n+1, 0))));
+	for(int i1 = 1; i1 <= m; i1++){
+		for(int j1 = 1; j1 <= n; j1++){
+			for(int i2 = 1; i2 <= m; i2++){
+				for(int j2 = 1; j2 <= n; j2++){
+					if(i1!=i2 && j1!=j2 || i1 == m && j1 == n && i2 == m && j2 == n){ //用判断的方法剔除了重复路径
+						dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1-1][j1][i2-1][j2]);
+						dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1][j1-1][i2][j2-1]);
+						dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1][j1-1][i2-1][j2]);
+						dp[i1][j1][i2][j2] = max(dp[i1][j1][i2][j2], dp[i1-1][j1][i2][j2-1]);
+						dp[i1][j1][i2][j2] += matrix[i1][j1] + matrix[i2][j2];
+					}
+				}
+			}
+		}
+	}
+	printf("%d\n", dp[m][n][m][n]);
+	return 0;
+}
+
+//version 3: dp of 3-dimensions
+#include <stdio.h>
+
+using namespace std;
+#define MAXN 51
+#define max(a, b) (a > b? a : b)
+
+int a[MAXN][MAXN];
+int f[MAXN+MAXN][MAXN][MAXN];
+
+int main(){
+	int m, n;
+	scanf("%d%d", &m, &n);
+	for(int i = 1; i <= m; i++)
+		for(int j = 1; j <= n; j++)
+			scanf("%d", &a[i][j]);
+	f[3][1][2] = a[2][1]+a[1][2];
+	for(int k = 4; k < m+n; k++){//hjb: the counter
+		for(int i1 = 1; i1 < k; i1++){
+			if(k-i1 <= m){
+				for(int i2 = i1+1; i2 < k; i2++){
+					if(k-i2 < m){
+						if(i1!=1) f[k][i1][i2] = max(f[k][i1][i2], f[k-1][i1-1][i2-1]);
+						if(i1!=1 && i2!=k-1) f[k][i1][i2] = max(f[k][i1][i2], f[k-1][i1-1][i2]);
+						if(i2-i1!=1) f[k][i1][i2] = max(f[k][i1][i2], f[k-1][i1][i2-1]);
+						if(i2!=k-1) f[k][i1][i2] = max(f[k][i1][i2], f[k-1][i1][i2]);
+						f[k][i1][i2] += a[k-i1][i1] + a[k-i2][i2];
+					}
+				}
+			}
+		}
+	}
+	int ans = 0;
+	if(m == 1|| n ==1) ans = 0;
+	else ans = f[m+n-1][n-1][n];
+	printf("%d\n", ans);
+	return 0;
+}
 
 
 //1010 过河卒
