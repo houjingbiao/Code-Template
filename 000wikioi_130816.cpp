@@ -18,7 +18,7 @@ unsigned int myswap(unsigned int x, int i, int j, int i1, int j1, bool blackMove
 		int pos1 = getPos(i1, j1);
 		int pos = getPos(i, j);
 		int mask = ((x&(0x03 << pos1)) >> pos1);//hjb: >> is prior to &
-		if(mask == 0x01 && !blackMove || mask == 0x10 && blackMove)
+		if(mask == 0x01 && !blackMove || mask == 0x02 && blackMove)//hjb: notice the hexical
 			return x;
 		int y = x&(~(0x03 << pos1));
 		y |= (mask << pos);
