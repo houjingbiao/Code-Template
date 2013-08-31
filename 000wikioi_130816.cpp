@@ -1,3 +1,150 @@
+//1004 四子连棋
+#include <stdio.h>
+#include <string.h>
+#include <map>
+#include <queue>
+using namespace std;
+
+int getPos(int i, int j){
+	return (i*4+j)*2;
+}
+
+void getCoods(int pos, int &i, int &j){
+	i = (pos/2)/4;
+	j = (pos/2)%4;
+}
+unsigned int myswap(unsigned int x, int i, int j, int i1, int j1, bool blackMove){
+	if(i1 >= 0 && i1 < 4 && j1 >= 0 && j1 < 4){
+		int pos1 = getPos(i1, j1);
+		int pos = getPos(i, j);
+		int mask = ((x&(0x03 << pos1)) >> pos1);//hjb: >> is prior to &
+		if(mask == 0x01 && !blackMove || mask == 0x10 && blackMove)
+			return x;
+		int y = x&(~(0x03 << pos1));
+		y |= (mask << pos);
+		return y;
+	}
+	return x;
+}
+
+unsigned int getNext(unsigned int x, int idx, bool blackMove){
+	int pos = 0;
+	int mask = 0x03;
+	if(idx < 4){
+		for(pos = 0; pos < 32; pos += 2)
+			if(((mask << pos) & x) == 0)
+				break;
+	}
+	else{
+		for(pos = 30; pos >= 0; pos -= 2)
+			if(((mask << pos) & x) == 0)
+				break;
+	}
+	int i, j;
+	getCoods(pos, i, j);
+	if((idx & 0x03) == 0)
+		return myswap(x, i, j, i-1, j, blackMove);
+	else if((idx & 0x03) == 1)
+		return myswap(x, i, j, i, j-1, blackMove);
+	else if((idx & 0x03) == 2) 
+		return myswap(x, i, j, i+1, j, blackMove);
+	else 
+		return myswap(x, i, j, i, j+1, blackMove);
+}
+
+unsigned int getVal(unsigned int x, int i, int j){
+	int pos = getPos(i, j);
+	return ((x &(0x03 << pos))>> pos);
+}
+
+bool isEnd(unsigned int x){
+	for(int i = 0; i < 4; i++){
+		if(getVal(x, i, 0) == getVal(x, i, 1)
+			&& getVal(x, i, 0) == getVal(x, i, 2)
+			&& getVal(x, i, 0) == getVal(x, i, 3))
+			return true;
+		if(getVal(x, 0, i) == getVal(x, 1, i)
+			&& getVal(x, 0, i) == getVal(x, 2, i)
+			&& getVal(x, 0, i) == getVal(x, 3, i))
+			return true;
+	}
+	if(getVal(x, 0, 0) == getVal(x, 1, 1)
+		&& getVal(x, 0, 0) == getVal(x, 2, 2)
+		&& getVal(x, 0, 0) == getVal(x, 3, 3))
+		return true;
+	if(getVal(x, 0, 3) == getVal(x, 1, 2)
+		&& getVal(x, 0, 3) == getVal(x, 2, 1)
+		&& getVal(x, 0, 3) == getVal(x, 3, 0))
+		return true;
+	return false;
+}
+
+bool update(queue<unsigned int>& q, map<unsigned int, bool> &s, bool isBlack){
+	queue<unsigned int> q1;
+	while(!q.empty()){
+		int x = q.front();
+		q.pop();
+		for(int i = 0; i < 8; i++){
+			int y = getNext(x, i, isBlack);
+			if(isEnd(y))
+				return true;
+			if(s.find(y) == s.end()){
+				q1.push(y);
+				s[y] = true;
+			}
+		}
+		if(q.empty()){
+			q = q1;
+			return false;
+		}
+	}
+}
+
+int main(){
+	unsigned int x = 0;
+	for(int i = 0; i < 4; i++){
+		char ch[10];
+		scanf("%s", &ch);
+		for(int j = 0; j < 4; j++){
+			unsigned int t;
+			switch(ch[j]){
+				case 'B':
+					x = x |(0x01 << ((i*4+j)*2));
+					break;
+				case 'W':
+					x = x |(0x02 << ((i*4+j)*2));
+					break;
+				case 'O':
+				default:
+					break;
+			}
+		}
+	}
+	if(isEnd(x)){
+		printf("0\n");
+		return 0;
+	}
+
+	map<unsigned int, bool> s_B;
+	queue<unsigned int> q_B;
+	s_B[x] = true;
+	q_B.push(x);
+	map<unsigned int, bool> s_W;
+	queue<unsigned int> q_W;
+	s_W[x] = true;
+	q_W.push(x);
+	int step = 0;
+	while(1){
+		step++;
+		if(update(q_B, s_B, (step&0x01)) || update(q_W, s_W, !(step&0x01))){
+			printf("%d", step);
+			return 0;
+		}
+	}
+	return 0;
+}
+
+
 //1039 数的划分 
 #include <stdio.h>
 #include <string.h>
