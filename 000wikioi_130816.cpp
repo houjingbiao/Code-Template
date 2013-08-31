@@ -1,18 +1,17 @@
 //1026 ÌÓÅÜµÄÀ­¶û·ò
 #include <stdio.h>
 #include <string.h>
-#include <queue>
+#include <set>
 #include <utility>
-#include <vector>
 using namespace std;
 #define MAXR 51
 #define MAXC 51
 char a[MAXR][MAXC];
 int main(){
-	freopen("in.txt", "r", stdin);
 	int R, C;
 	int posx, posy;
 	scanf("%d%d", &R, &C);
+	memset(a,0,sizeof(a));
 	for(int i = 0; i < R; i++){
 		char xx[MAXC];
 		scanf("%s", &xx);
@@ -28,8 +27,8 @@ int main(){
 	int N;
 	scanf("%d", &N);
 	int step = 0;
-	queue<pair<int, int> > q1;
-	q1.push(pair<int, int>(posx, posy));
+	set<pair<int, int> > q1;
+	q1.insert(pair<int, int>(posx, posy));
 	while(step < N){
 		char s[10];
 		scanf("%s", &s);
@@ -54,15 +53,13 @@ int main(){
 			diffy = 1;
 			break;
 		}
-		queue<pair<int, int> > q2;
+		set<pair<int, int> > q2;
 		while(!q1.empty()){
-			posx = q1.front().first;
-			posy = q1.front().second;
-			q1.pop();
-			posx = posx + diffx;
-			posy = posy + diffy;
-			while(posx >= 0 && posx < R && posy >= 0 && posy < C && a[posx][posy] != 'X'){
-				q2.push(pair<int, int>(posx, posy));
+			posx = q1.begin()->first + diffx;
+			posy = q1.begin()->second + diffy;
+			q1.erase(q1.begin());
+			while(posx >= 0 && posx < R && posy >= 0 && posy < C && a[posx][posy] != 'X' && q2.find(pair<int, int>(posx, posy)) == q2.end()){
+				q2.insert(pair<int, int>(posx, posy));
 				posx = posx + diffx;
 				posy = posy + diffy;
 			}
@@ -71,14 +68,12 @@ int main(){
 		step++;
 	}
 	while(!q1.empty()){
-		posx = q1.front().first;
-		posy = q1.front().second;
-		q1.pop();
-		a[posx][posy] = '*';
+		a[q1.begin()->first][q1.begin()->second] = '*';
+		q1.erase(q1.begin());
 	}
 	for(int i = 0; i < R; i++){
 		for(int j = 0; j < C; j++)
-			printf("%c ", a[i][j]);
+			printf("%c", a[i][j]);
 		printf("\n");
 	}
 	return 0;
