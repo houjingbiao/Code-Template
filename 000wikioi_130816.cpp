@@ -1,3 +1,75 @@
+//1099 ×Ö´®±ä»»
+#include <stdio.h>
+#include <string.h>
+#include <set>
+#include <map>
+#include <utility>
+#include <algorithm>
+using namespace std;
+#define MAXL 21
+#define MAXN 7
+
+//bool update(string &s, pair<string, string> rule, set<string> &myset1, string &goal){ //hjb: bool and void, 
+//	//int len = rule.first.length();
+//	//for(int i = 0; i <= s.length() - len; i++){
+//	//	if(s.compare(i, len, rule.first) == 0){//hjb: no ==, should substring
+//	//		string news = s.substr(0, i);
+//	//		news += rule.first;
+//	//		news += s.substr(i+len, s.length() - len - i - 1);
+//	//		if(news.compare(goal) == 0) return true;
+//	//		if(myset1.find(news) == myset1.end()) myset1.insert(news);
+//	//	}
+//	//}
+//	return false;
+//}
+
+int main(){
+	string A, B;
+	map<const string, string> rule;
+	map<const string, bool> rule2;
+	map<int, string> rule3;
+	char temp[MAXL];
+	scanf("%s", &temp);
+	A = temp;
+	scanf("%s", &temp);
+	B = temp;
+	char temp1[MAXL];
+	while(scanf("%s", &temp) && scanf("%s", &temp1)){
+		const string s = temp;
+		string s1 = temp1;
+		rule3[2] = s;
+		//pair<string, bool> a = pair<string, bool>(s, true);
+		//rule2.insert(rule2.end(), a);
+		pair<string, string> xx;
+		xx.first = s;
+		xx.second = s1;
+		rule[s] = s1;
+
+		//rule.insert(rule.end(), xx);
+	}
+	//set<string> myset;
+	//myset.insert(A);
+	//int step = 1;
+	//while(step <= 10){
+	//	set<string> myset1;
+	//	while(!myset.empty()){
+	//		string s = *myset.begin();//hjb: * is necessary
+	//		myset.erase(myset.begin());
+	//		map<string, string>::iterator ite = rule.begin();
+	//		for(; ite != rule.end(); ite++){//hjb: for(int i = 0; i < N; i++) doesn't work, you have to use iterator
+	//			if(update(s, *ite, myset1, B)){
+	//				printf("%d\n", step);
+	//				return 0;
+	//			}
+	//		}
+	//	}
+	//	myset = myset1;
+	//}
+	//if(step > 10)
+	//	printf("NO ANSWER!\n");
+	//return 0;
+}
+
 //1026 ÌÓÅÜµÄÀ­¶û·ò
 #include <stdio.h>
 #include <string.h>
