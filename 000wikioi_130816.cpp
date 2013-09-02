@@ -1,73 +1,238 @@
+//1166 矩阵取数游戏
+#include<stdio.h>
+#include<string.h>
+#include<iostream>
+using namespace std;
+
+int n,m,a[81];
+int f[81][81][31];
+int ys[81][31];
+int ans[31];
+int c[31];
+void mul(int *x,int *y,int z){
+    memset(c,0,sizeof(c));
+    c[0]=y[0];
+    for(int i=1;i<=c[0];++i)
+        c[i]=y[i]*z;
+    for(int i=1;i<=c[0];++i){
+        c[i+1]+=c[i]/100000;
+        c[i]%=100000;
+    }
+    while(c[c[0]+1]){
+        c[0]++;
+        c[c[0]+1]+=c[c[0]]/10000;
+        c[c[0]]%=100000;
+    }
+    for(int i=0;i<=30;++i) x[i]=c[i];
+}
+void add(int *x,int *y,int *z){
+    memset(c,0,sizeof(c));
+    if(y[0]>z[0]) c[0]=y[0];
+    else c[0]=z[0];
+    for(int i=1;i<=c[0];++i)
+        c[i]=y[i]+z[i];
+    for(int i=1;i<=c[0];++i){
+        c[i+1]+=c[i]/100000;
+        c[i]%=100000;
+    }
+    if(c[c[0]+1]) c[0]++;
+    for(int i=0;i<=30;++i) x[i]=c[i];
+}
+bool MAX(int *x,int *y){
+    if(x[0]>y[0]) return 1;
+    else if(y[0]>x[0]) return 0;
+    else{
+        for(int i=x[0];i>=1;--i)
+        if(x[i]>y[i]) return 1;
+        else if(y[i]>x[i]) return 0;
+    }
+    return 1;
+}
+int main()
+{
+    scanf("%d%d",&n,&m);
+    ys[0][0]=1; ys[0][1]=1;
+    for(int i=1;i<=m;++i)
+        mul(ys[i],ys[i-1],2);
+    ans[0]=1; ans[1]=0;
+    for(int i=1;i<=n;++i){
+        for(int j=1;j<=m;++j){
+            scanf("%d",&a[j]);
+            mul(f[j][j],ys[m],a[j]);
+        }
+        for(int k=2;k<=m;++k)
+            for(int lx=1;lx<=m-k+1;++lx){
+                int ly=lx+k-1,ll;
+                int xm[31],ym[31],cm[31];
+                ll=ly;
+                mul(cm,ys[m-k+1],a[lx]);
+                ly=ll;  //不记录一下ly会莫名的变成0，搞到我都不知道哪里错了，xm的值也是一样。
+                add(xm,cm,f[lx+1][ly]);
+                mul(ym,ys[m-k+1],a[ly]);
+                add(ym,ym,f[lx][ly-1]);
+                if(MAX(xm,ym))
+                    memcpy(f[lx][ly],xm,sizeof(int)*31);
+                else
+                    memcpy(f[lx][ly],ym,sizeof(int)*31);
+            }
+        add(ans,ans,f[1][m]);
+    }
+    printf("%d",ans[ans[0]]);
+    for(int i=ans[0]-1;i>=1;--i) printf("%05d",ans[i]);
+    printf("\n");
+    return 0;
+}
+
+//1040 统计单词个数
+#include <stdio.h>   
+#include <string.h>   
+  
+int word[201][201], dp[201][201][41];  
+char c[21], w[6][10], c0[201], c1[201];  
+int d, p, k, s, max, le[6], len;  
+  
+int main()  
+{  
+    int i, j, l, m, yes, x, st;  
+    scanf("%d", &d);  
+    while(d--)  
+    {  
+        scanf("%d%d", &p, &k);  
+        for(j = 0; j < p; j++)  
+        {  
+            scanf("%s", c);  
+            if(j == 0)  strcpy(c0, c);  
+            else        strcat(c0, c);  
+        }  
+        len = strlen(c0);  
+        scanf("%d", &s);  
+        for(j = 0; j < s; j++)  
+        {  
+            scanf("%s", w[j]);  
+            le[j] = strlen(w[j]);  
+        }  
+        for(i = 0; i < len; i++)  
+            for(j = 0; j < len; j++)  
+                word[i][j] = 0;   
+//************************************************************************   
+/*算出第j个:c0[j-1]到第i个:c0[i-1]不分时最多有单词word[j][i]个*/  
+        for(i = len-1; i >= 0; i--)   
+            for(j = len-1; j >= 0; j--)  
+            {  
+                for(l = 0; l < s; l++)  
+                {  
+                    yes = 0;  
+                    if(c0[j] == w[l][0] && le[l] <= i-j+1)  
+                    {  
+                        yes = 1;   
+                        for(m = 0; m < le[l]; m++)  
+                            if(c0[j+m] != w[l][m])  
+                            {  
+                                yes = 0;   
+                                break;   
+                            }  
+                    }  
+                    if(yes == 1)    break;  
+                }  
+                if(yes == 1)    word[j][i] = word[j+1][i]+1;   
+                else            word[j][i] = word[j+1][i];  
+            }  
+//*************************************************************************   
+/*算出 第i个: c0[i-1] 到 第j个:c0[j-1] 分st等份最多有单词dp[i][j][st]个*/  
+        for(st = 1; st <= k; st++)  
+            for(i = 0; i < len-st+1; i++)  
+                for(j = i+st-1; j < len; j++)  
+                {  
+                    if(st == 1)  
+                    {  
+                        dp[i][j][st] = word[i][j];   
+                        continue;   
+                    }  
+                for(max = 0, l = i+st-2; l < j; l++)   
+                {  
+                    x = dp[i][l][st-1]+word[l+1][j];  
+                    if(x > max)  max = x;  
+                }  
+                dp[i][j][st] = max;  
+                }  
+//************************************************************************   
+        printf("%d\n", dp[0][len-1][k]);  
+    }  
+    return 0;  
+}  
+
+
+
 //1099 字串变换
 #include <stdio.h>
 #include <string.h>
-#include <set>
-#include <map>
+#include <string>
+#include <vector>
 #include <utility>
 #include <algorithm>
 using namespace std;
 #define MAXL 21
 #define MAXN 7
-
-//bool update(string &s, pair<string, string> rule, set<string> &myset1, string &goal){ //hjb: bool and void, 
-//	//int len = rule.first.length();
-//	//for(int i = 0; i <= s.length() - len; i++){
-//	//	if(s.compare(i, len, rule.first) == 0){//hjb: no ==, should substring
-//	//		string news = s.substr(0, i);
-//	//		news += rule.first;
-//	//		news += s.substr(i+len, s.length() - len - i - 1);
-//	//		if(news.compare(goal) == 0) return true;
-//	//		if(myset1.find(news) == myset1.end()) myset1.insert(news);
-//	//	}
-//	//}
-//	return false;
-//}
+//hjb: it is forbidden that using string type as element of set and map, for that will cause crash
+bool update(string &s, pair<string, string> rule, vector<string> &myset1, string &goal){ //hjb: bool and void, 
+	int len = rule.first.length();
+	if(s.length() < len)
+		return false;
+	for(int i = 0; i <= s.length() - len; i++){
+		if(s.compare(i, len, rule.first) == 0){//hjb: no ==, should substring
+			string news = s.substr(0, i);
+			news += rule.second;
+			news += s.substr(i+len, s.length() - len - i);
+			if(news.compare(goal) == 0) return true;
+			vector<string>::iterator ite = myset1.begin();
+			for(; ite != myset1.end(); ite++)
+				if(ite->compare(news) == 0)
+					break;
+			if(ite == myset1.end()) myset1.push_back(news);
+		}
+	}
+	return false;
+}
 
 int main(){
 	string A, B;
-	map<const string, string> rule;
-	map<const string, bool> rule2;
-	map<int, string> rule3;
+	vector<pair<string, string> > rule;
 	char temp[MAXL];
 	scanf("%s", &temp);
 	A = temp;
 	scanf("%s", &temp);
 	B = temp;
 	char temp1[MAXL];
-	while(scanf("%s", &temp) && scanf("%s", &temp1)){
-		const string s = temp;
-		string s1 = temp1;
-		rule3[2] = s;
-		//pair<string, bool> a = pair<string, bool>(s, true);
-		//rule2.insert(rule2.end(), a);
+	while(scanf("%s", &temp) && scanf("%s", &temp1) && *temp && *temp1){
 		pair<string, string> xx;
-		xx.first = s;
-		xx.second = s1;
-		rule[s] = s1;
-
-		//rule.insert(rule.end(), xx);
+		xx.first = temp;
+		xx.second = temp1;
+		rule.push_back(xx);
+		memset(temp, 0, sizeof(temp));
+		memset(temp1, 0, sizeof(temp1));
 	}
-	//set<string> myset;
-	//myset.insert(A);
-	//int step = 1;
-	//while(step <= 10){
-	//	set<string> myset1;
-	//	while(!myset.empty()){
-	//		string s = *myset.begin();//hjb: * is necessary
-	//		myset.erase(myset.begin());
-	//		map<string, string>::iterator ite = rule.begin();
-	//		for(; ite != rule.end(); ite++){//hjb: for(int i = 0; i < N; i++) doesn't work, you have to use iterator
-	//			if(update(s, *ite, myset1, B)){
-	//				printf("%d\n", step);
-	//				return 0;
-	//			}
-	//		}
-	//	}
-	//	myset = myset1;
-	//}
-	//if(step > 10)
-	//	printf("NO ANSWER!\n");
-	//return 0;
+	vector<string> myset;
+	myset.push_back(A);
+	int step = 1;
+	while(step <= 10){
+		vector<string> myset1;
+		while(!myset.empty()){
+			string s = *myset.begin();//hjb: * is necessary
+			myset.erase(myset.begin());
+			vector<pair<string, string> >::iterator ite = rule.begin();
+			for(; ite != rule.end(); ite++){//hjb: for(int i = 0; i < N; i++) doesn't work, you have to use iterator
+				if(update(s, *ite, myset1, B)){
+					printf("%d\n", step);
+					return 0;
+				}
+			}
+		}
+		myset = myset1;
+		step++;
+	}
+	if(step > 10)
+		printf("NO ANSWER!\n");
+	return 0;
 }
 
 //1026 逃跑的拉尔夫
