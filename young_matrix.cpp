@@ -90,20 +90,49 @@ bool young_find(int val){
 }
 
 void young_insert_rec(int val, int i, int j){
-	if(val >= MAXV)	return;
+	/*if(val >= MAXV)	return;
 	int i = 0, j = MAX_N - 1;
 	while(j>=0 && i < MAX_M){
-		if(val < Y[i][j])
-			j--;
-		else if(val > Y[i][j])
-			i++;
-		else
-			return true;
+	if(val < Y[i][j])
+	j--;
+	else if(val > Y[i][j])
+	i++;
+	else
+	return true;
+	}*/
+
+	while(i < MAX_M && j < MAX_N){
+		if(val > Y[i][j]){
+			i++, j++;
+		}
+		else if(val < Y[i-1][j]){
+			int t = val;
+			val = Y[i-1][j];
+			Y[i-1][j] = t;
+			return young_insert_rec(val, i-1, j-1);
+		}
 	}
+	while(i == MAX_M && Y[i-1][j] < val){
+		j++;
+	}
+	while(j == MAX_N && Y[i][j-1] < val){
+		i++;
+	}
+	return true;
 }
 
-void young_insert(int val){
-
+bool young_insert(int val){
+	if(young_isEmpty()){
+		Y[0][0] = val;
+		return true;
+	}
+	if(young_isFull())
+		return false;
+	if(val < Y[0][0]){
+		int t = val;
+		val = Y[0][0];
+		Y[0][0] = t;
+	}
 	young_insert_rec(val, 0, 0);
 }
 
