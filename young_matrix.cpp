@@ -39,9 +39,9 @@ void young_print(){
 	for(int i = 0; i < MAX_M; i++){
 		for(int j = 0; j < MAX_N; j++){
 			if(Y[i][j] < MAXV)
-				printf("%3d ", Y[i][j]);
+				printf("%2d ", Y[i][j]);
 			else
-				printf("%s ", "###");
+				printf("%s ", "##");
 		}
 		printf("\n");
 	}
@@ -89,6 +89,8 @@ bool young_find(int val){
 	return false;
 }
 
+
+
 void young_insert_rec(int val, int i, int j){
 	/*if(val >= MAXV)	return;
 	int i = 0, j = MAX_N - 1;
@@ -118,22 +120,45 @@ void young_insert_rec(int val, int i, int j){
 	while(j == MAX_N && Y[i][j-1] < val){
 		i++;
 	}
-	return true;
+	return;
+}
+
+void swap(int &a, int &b)
+{
+	int temp;
+	temp = a;
+	a = b;
+	b = temp;
+}
+
+//void young_min_heapify(int a[][11],int i,int j)
+void young_min_heapify(int i,int j)
+{
+	int x,y;
+	if (i>0 && Y[i][j] < Y[i-1][j])
+	{
+		x = i-1;
+		y = j;
+	}
+	else { x = i; y = j;}
+	if (j>0 && Y[x][y] < Y[i][j-1])
+	{
+		x = i;
+		y = j-1;
+	}
+	if (x !=i || y !=j)
+	{
+		swap(Y[i][j],Y[x][y]);
+		printf("\n%d %d:\n", x, y);
+		young_print();
+		young_min_heapify(x, y);
+	}
 }
 
 bool young_insert(int val){
-	if(young_isEmpty()){
-		Y[0][0] = val;
-		return true;
-	}
-	if(young_isFull())
-		return false;
-	if(val < Y[0][0]){
-		int t = val;
-		val = Y[0][0];
-		Y[0][0] = t;
-	}
-	young_insert_rec(val, 0, 0);
+	Y[MAX_M-1][MAX_N-1] = val;
+	young_min_heapify(MAX_M-1, MAX_N-1);
+	return true;
 }
 
 void young_sort(){
@@ -141,14 +166,15 @@ void young_sort(){
 
 int main(){
 	young_reset();
-	bool ret = young_isFull();
-	ret = young_isEmpty();
+	young_print();
 	int A[MAX_M*MAX_N];
 	for(int i = 0; i < MAX_M*MAX_N; i++){
 		A[i] = rand()%100;
+		young_insert(A[i]);
+		printf("\nthe %d:\n", i);
+		young_print();
 	}
-	young_init(A, 100);
-	ret = young_isFull();
+	//young_init(A, 100);
 	young_print();
 	int j = 0;
 	/*while(1){
@@ -157,6 +183,6 @@ int main(){
 	young_print();
 	}*/
 	young_extractMin();
-	ret = young_find(MAXV);
+	int ret = young_find(MAXV);
 	return -1;
 }
